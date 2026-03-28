@@ -21,4 +21,17 @@ export const llmApi = {
   chat: (data) => api.post('/llm/chat', data),
 };
 
+export const templatesApi = {
+  getAll: () => api.get('/templates'),
+  save: (data) => api.post('/templates', data),
+  update: (id, data) => api.put(`/templates/${id}`, data),
+  remove: (id) => api.delete(`/templates/${id}`),
+};
+
+export const contextApi = {
+  getAll: () => api.get('/context'),
+  save: (data) => api.post('/context', data),
+  remove: (id) => api.delete(`/context/${id}`),
+};
+
 export default api;

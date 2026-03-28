@@ -6,6 +6,8 @@ import settingsRoutes from './routes/settings.routes.js';
 import historyRoutes from './routes/history.routes.js';
 import llmRoutes from './routes/llm.routes.js';
 import exportRoutes from './routes/export.routes.js';
+import templatesRoutes from './routes/templates.routes.js';
+import contextRoutes from './routes/context.routes.js';
 
 dotenv.config();
 
@@ -19,6 +21,8 @@ app.use('/api/settings', settingsRoutes);
 app.use('/api/history', historyRoutes);
 app.use('/api/llm', llmRoutes);
 app.use('/api/export', exportRoutes);
+app.use('/api/templates', templatesRoutes);
+app.use('/api/context', contextRoutes);
 
 // Basic health check
 app.get('/health', (req, res) => {
