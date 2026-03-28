@@ -20,17 +20,16 @@ router.post('/generate', async (req, res) => {
     const { prompt, provider, types } = req.body;
     const llmService = await getLLMService(provider);
     
-    // Construct a more persuasive system prompt
     const selectedTypes = types && types.length > 0 ? types : ['functional'];
     const typesStr = selectedTypes.join(', ');
-    const systemPrompt = `You are an expert QA Engineer. Your task is to generate a comprehensive suite of test cases based on the provided requirements.
+    
+    const systemPrompt = `You are an expert QA Engineer. Your task is to generate comprehensive outputs perfectly aligned with the user's requirements.
     
     CRITICAL INSTRUCTIONS:
-    1. You MUST generate at least 2-3 test cases for EACH of the following categories: ${typesStr}.
-    2. Your response MUST be a valid JSON array of objects.
-    3. Each object MUST have these exact keys: "id", "summary", "preconditions", "steps", "expectedResult", "type".
-    4. The "type" field MUST match one of the categories: ${typesStr}.
-    5. Do NOT include any introductory or concluding text. Only return the JSON array starting with [ and ending with ].`;
+    1. Look carefully at the user's entire prompt. If they provide a "FORMAT" section, a specific table structure, or custom fields (e.g. '| Test ID | Endpoint |...'), you MUST use ONLY those exact columns/fields as your JSON object keys (converted to camelCase).
+    2. If NO format or custom fields are provided, fall back to these default keys: "id", "summary", "preconditions", "steps", "expectedResult", "type".
+    3. Your response MUST be a valid JSON array of objects representing rows.
+    4. Do NOT include any introductory or concluding text (no markdown wrapping other than the JSON block itself). ONLY return the JSON array starting with [ and ending with ].`;
 
     console.log(`Generating test cases for types: ${typesStr} using provider: ${provider}`);
     const responseText = await llmService.generate(prompt, systemPrompt);

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Orchestrator | Enterprise QA Platform</title>
+    <link rel="stylesheet" href="./style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <!-- Dashboard Sidebar -->
+        <nav class="sidebar">
+            <div class="logo">
+                <span class="icon">🚀</span>
+                <span class="text">Orchestrator</span>
+            </div>
+            <ul class="nav-links">
+                <li class="active" data-page="jira"><span class="icon">🎟️</span> Jira Stories</li>
+                <li data-page="plan"><span class="icon">📋</span> Test Plans</li>
+                <li data-page="cases"><span class="icon">🛠️</span> Test Cases</li>
+                <li data-page="code"><span class="icon">💻</span> Code Gen</li>
+            </ul>
+            <div class="sidebar-footer">
+                <div class="user-pill">
+                    <div class="avatar">VP</div>
+                    <div class="user-info">
+                        <span class="name">Vinod P.</span>
+                        <span class="role">Admin</span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="content">
+            <header class="top-bar">
+                <div class="search-bar">
+                    <span class="icon">🔍</span>
+                    <input type="text" placeholder="Search stories, test cases...">
+                </div>
+                <div class="actions">
+                    <button class="btn btn-primary" id="sync-jira">Sync Jira</button>
+                    <button class="btn btn-secondary" id="open-settings">Settings</button>
+                </div>
+            </header>
+
+            <!-- Settings Modal -->
+            <div id="settings-modal" class="modal" style="display:none;">
+                <div class="modal-content">
+                    <h3>Jira API Settings</h3>
+                    <div class="form-group">
+                        <label>Jira Domain (e.g. mycompany)</label>
+                        <input type="text" id="jira-domain" placeholder="mycompany">
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="jira-email" placeholder="vinod@vwo.com">
+                    </div>
+                    <div class="form-group">
+                        <label>API Token</label>
+                        <input type="password" id="jira-token" placeholder="ATATT...">
+                    </div>
+                    <div class="modal-actions">
+                        <button class="btn btn-primary" id="save-settings">Save Config</button>
+                        <button class="btn btn-secondary" id="close-settings">Cancel</button>
+                    </div>
+                </div>
+            </div>
+
+            <section id="jira-section" class="page-section">
+                <div class="section-header">
+                    <h2>Jira User Stories</h2>
+                    <p>Fetch stories and generate test artifacts automatically.</p>
+                </div>
+                <div class="stories-grid" id="story-list">
+                    <!-- Stories will be injected here -->
+                    <div class="loading-pulse">Waiting for synchronization...</div>
+                </div>
+            </section>
+
+            <section id="plan-section" class="page-section" style="display:none;">
+                <div class="section-header">
+                    <h2>Test Plans</h2>
+                    <p>Comprehensive strategy for your release cycles.</p>
+                </div>
+                <div id="plan-viewer" class="plan-card">
+                    <!-- Test Plan content -->
+                </div>
+            </section>
+
+            <section id="cases-section" class="page-section" style="display:none;">
+                <div class="section-header">
+                    <h2>Test Case Dashboard</h2>
+                    <div class="filter-bar">
+                        <span class="tag">Functional</span>
+                        <span class="tag">Security</span>
+                        <span class="tag">Bug-Related</span>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table id="tc-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Category</th>
+                                <th>Summary</th>
+                                <th>Priority</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tc-body">
+                            <!-- Test cases injected here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="code-section" class="page-section" style="display:none;">
+                <div class="section-header">
+                    <h2>Code Generator</h2>
+                    <div class="code-selector">
+                        <button class="selector active">Selenium</button>
+                        <button class="selector">Playwright</button>
+                    </div>
+                </div>
+                <div class="code-editor-container">
+                    <div class="editor-header">
+                        <span class="filename">GeneratedTest.js</span>
+                        <button class="copy-btn">Copy Code</button>
+                    </div>
+                    <pre><code id="code-output">// Select a test case to generate code...</code></pre>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script type="module" src="./main.js"></script>
+</body>
+</html>

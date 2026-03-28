@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VWO - Executive Test Metrics Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366F1;
+            --secondary: #94A3B8;
+            --success: #10B981;
+            --danger: #F43F5E;
+            --warning: #F59E0B;
+            --info: #0EA5E9;
+            --bg: #0B0E14;
+            --card: rgba(23, 27, 38, 0.8);
+            --border: rgba(255, 255, 255, 0.08);
+            --text: #F1F5F9;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; }
+        body { background: var(--bg); color: var(--text); padding: 2rem; min-height: 100vh; line-height: 1.5; }
+
+        .dashboard { max-width: 1300px; margin: 0 auto; display: grid; grid-template-columns: repeat(12, 1fr); gap: 1.5rem; }
+
+        header { grid-column: span 12; display: flex; justify-content: space-between; align-items: end; padding: 1rem 0 2rem; border-bottom: 1px solid var(--border); margin-bottom: 2rem; }
+        .title h1 { font-size: 2.2rem; font-weight: 700; background: linear-gradient(to right, #818CF8, #C084FC); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .title p { color: var(--secondary); margin-top: 0.5rem; }
+
+        .stat-card { grid-column: span 3; background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 1.75rem; position: relative; overflow: hidden; }
+        .stat-card.span-6 { grid-column: span 6; }
+        .stat-card h3 { font-size: 0.85rem; color: var(--secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem; }
+        .stat-card .value { font-size: 2.5rem; font-weight: 700; display: block; }
+        .stat-card .footer { margin-top: 1rem; font-size: 0.8rem; display: flex; align-items: center; justify-content: space-between; }
+
+        .badge { padding: 0.25rem 0.6rem; border-radius: 6px; font-weight: 600; font-size: 0.75rem; }
+        .badge-success { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+        .badge-danger { background: rgba(244, 63, 94, 0.1); color: var(--danger); }
+        .badge-info { background: rgba(14, 165, 233, 0.1); color: var(--info); }
+
+        .grid-wide { grid-column: span 8; background: var(--card); border: 1px solid var(--border); border-radius: 24px; padding: 2rem; }
+        .grid-side { grid-column: span 4; background: var(--card); border: 1px solid var(--border); border-radius: 24px; padding: 2rem; }
+
+        .metric-row { display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 0; border-bottom: 1px solid var(--border); }
+        .metric-row:last-child { border-bottom: none; }
+        .metric-label { font-weight: 400; font-size: 0.95rem; }
+        .metric-value { font-weight: 700; font-size: 1.1rem; }
+
+        .progress-container { width: 100%; height: 8px; background: rgba(255,255,255,0.05); border-radius: 10px; margin-top: 0.5rem; }
+        .progress-bar { height: 100%; border-radius: 10px; }
+
+        .hallucination-footer { grid-column: span 12; margin-top: 2rem; padding: 1.5rem; background: rgba(255, 184, 0, 0.03); border-left: 4px solid var(--warning); border-radius: 12px; font-size: 0.9rem; color: #FCD34D; }
+
+        @media (max-width: 1024px) { .stat-card { grid-column: span 6; } .grid-wide, .grid-side { grid-column: span 12; } }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <header>
+            <div class="title">
+                <h1>VWO Login Dashboard Metrics</h1>
+                <p>Requirement: Authentication System & User Dashboard Access</p>
+            </div>
+            <div style="text-align: right">
+                <span class="badge badge-info">Execution Summary Report</span>
+                <p style="font-size: 0.8rem; color: var(--secondary); margin-top: 0.5rem;">Cycle ID: VWO-2026-L1</p>
+            </div>
+        </header>
+
+        <!-- Top Overview -->
+        <div class="stat-card">
+            <h3>Requirements Covered</h3>
+            <span class="value">01</span>
+            <div class="footer"><span class="badge badge-success">Target: 100%</span></div>
+        </div>
+        <div class="stat-card">
+            <h3>Test Case Writing Ratio</h3>
+            <span class="value">7.0</span>
+            <div class="footer">TCs / Requirement</div>
+        </div>
+        <div class="stat-card">
+            <h3>Cases Not Executed</h3>
+            <span class="value" style="color: var(--secondary)">06</span>
+            <div class="footer"><span style="color: var(--danger)">85.7% Pending</span></div>
+        </div>
+        <div class="stat-card">
+            <h3>Defects Found</h3>
+            <span class="value" style="color: var(--danger)">01</span>
+            <div class="footer"><span class="badge badge-danger">1 High Severity</span></div>
+        </div>
+
+        <!-- Detailed Metrics -->
+        <div class="grid-wide">
+            <h2 style="margin-bottom: 1.5rem">Core Execution Metrics</h2>
+            
+            <div class="metric-row">
+                <div class="metric-label">Total No. of Test Cases Written</div>
+                <div class="metric-value">07</div>
+            </div>
+            <div class="metric-row">
+                <div class="metric-label">Total No. of Test Cases Executed</div>
+                <div class="metric-value">01</div>
+            </div>
+            <div class="metric-row">
+                <div style="flex: 1">
+                    <div style="display: flex; justify-content: space-between">
+                        <span class="metric-label">% of Test Cases Executed</span>
+                        <span class="metric-value">14.3%</span>
+                    </div>
+                    <div class="progress-container"><div class="progress-bar" style="width: 14.3%; background: var(--info)"></div></div>
+                </div>
+            </div>
+            <div class="metric-row">
+                <div style="flex: 1">
+                    <div style="display: flex; justify-content: space-between">
+                        <span class="metric-label">% Test Cases Passed (of executed)</span>
+                        <span class="metric-value">0%</span>
+                    </div>
+                    <div class="progress-container"><div class="progress-bar" style="width: 0%; background: var(--success)"></div></div>
+                </div>
+            </div>
+            <div class="metric-row">
+                <div style="flex: 1">
+                    <div style="display: flex; justify-content: space-between">
+                        <span class="metric-label">% Test Cases Failed (of executed)</span>
+                        <span class="metric-value">100%</span>
+                    </div>
+                    <div class="progress-container"><div class="progress-bar" style="width: 100%; background: var(--danger)"></div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Defect Categorization -->
+        <div class="grid-side">
+            <h2 style="margin-bottom: 1.5rem">Defect Profiling</h2>
+            
+            <div class="metric-row">
+                <span>Critical Defects</span>
+                <span class="metric-value">00</span>
+            </div>
+            <div class="metric-row">
+                <span>High Severity Defects</span>
+                <span class="metric-value" style="color: var(--danger)">01</span>
+            </div>
+            <div class="metric-row">
+                <span>Medium Defects</span>
+                <span class="metric-value">00</span>
+            </div>
+            <div class="metric-row">
+                <span>Low Defects</span>
+                <span class="metric-value">00</span>
+            </div>
+            <div class="metric-row">
+                <span>Customer/UAT Defects</span>
+                <span class="metric-value">00</span>
+            </div>
+            
+            <p style="margin-top: 2rem; color: var(--secondary); font-size: 0.85rem; font-style: italic;">
+                "Formula Applied: (Failed TCs / Total Executed) * 100"
+            </p>
+        </div>
+
+        <div class="hallucination-footer">
+            <strong>Anti-Hallucination Disclaimer:</strong><br>
+            All statistical data presented in this HTML report (14.3% Execution, 100% Failure Rate) is an **Inference (low confidence)** derived from the single Bug Report generated for the "Inconsistent login error". These figures serve as a model for the requested `Test Metrics.xlsx` format and do not constitute a final production status report.
+        </div>
+    </div>
+</body>
+</html>

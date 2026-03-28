@@ -1,0 +1,130 @@
+[
+  {
+    "id": "t2",
+    "name": "PRD to Test Cases (Comprehensive)",
+    "content": "ROLE: You are a Senior QA Engineer with 10+ years of experience.\nTASK: Generate comprehensive test cases from this PRD.\nCOVERAGE AREAS: Functional, Negative, Boundary, Edge.\nCONSTRAINTS: Only PRD content, No assumptions.\nFORMAT: | TID | Category | Description | Pre-conditions | Steps | Expected | Priority |",
+    "category": "TestCaseCreation"
+  },
+  {
+    "id": "t3",
+    "name": "API Test Case Generation",
+    "content": "ROLE: You are an API Testing Specialist.\nTASK: Generate test cases for this API endpoint.\nCOVERAGE: Happy path, Invalid inputs, Auth, Error handling.\nFORMAT: | Test ID | Endpoint | Method | Request Body | Expected Status | Expected Response |",
+    "category": "TestCaseCreation"
+  },
+  {
+    "id": "t4",
+    "name": "Bug Report Review Template",
+    "content": "ROLE: You are a QA Lead reviewing bug reports.\nTASK: Review this bug report for completeness.\nCHECKLIST: Clear title, Environment, Steps, Expected vs Actual, Evidence, Severity.\nFORMAT: Completeness Score: [X/6], Missing Items: [List], Suggested Improvements: [List]"
+  },
+  {
+    "id": "t5",
+    "name": "Code Review (QA Focus)",
+    "content": "ROLE: You are a Senior QA Engineer reviewing code for testability.\nTASK: Review this code and identify testing concerns: Testability, Error handling, Edge cases.\nFORMAT: | Line | Issue Type | Description | Suggested Test Case |"
+  },
+  {
+    "id": "t6",
+    "name": "API Error Handling Tests",
+    "content": "ROLE: You are an API QA Engineer.\nTASK: Generate error handling test cases (4xx, 5xx, timeouts).\nFORMAT: | Test ID | Error Scenario | Trigger | Expected Code | Expected Response Format |",
+    "category": "APITestingTemplate"
+  },
+  {
+    "id": "1774679806496",
+    "name": "Mobile Functional",
+    "content": "This is a mobile functional test prompt."
+  },
+  {
+    "id": "1774679845277",
+    "name": "Mobile Regression",
+    "content": "Mobile regression test cases."
+  },
+  {
+    "id": "1774679937634",
+    "name": "Mobile UI Tests",
+    "content": "Mobile UI test cases.",
+    "category": "General"
+  },
+  {
+    "id": "1774683228683445",
+    "name": "Basic Test Case Generation",
+    "content": "ROLE: You are a Senior QA Engineer.\n\nTASK: Generate [NUMBER] test cases for [FEATURE].\n\nCONSTRAINTS:\n- Use ONLY the provided requirements\n- Do NOT assume undocumented behavior\n- If information is missing, state \"Not specified\"\n\nFORMAT:\n| Test ID | Description | Pre-conditions | Steps | Expected Result | Priority |\n\nREQUIREMENTS:\n[PASTE REQUIREMENTS HERE]",
+    "category": "TestCaseCreation"
+  },
+  {
+    "id": "1774683228683126",
+    "name": "Negative Test Cases Only",
+    "content": "ROLE: You are a QA Engineer focused on negative testing.\n\nTASK: Generate negative test cases for [FEATURE].\n\nFOCUS AREAS:\n- Invalid inputs\n- Boundary violations\n- Missing required fields\n- Unauthorized access\n- Malformed data\n\nCONSTRAINTS:\n- Do NOT include happy path scenarios\n- Each test must validate error handling\n- Include expected error message if documented\n\nFORMAT:\n| Test ID | Invalid Scenario | Input | Expected Error |\n\nFEATURE REQUIREMENTS:\n[PASTE REQUIREMENTS]",
+    "category": "TestCaseCreation"
+  },
+  {
+    "id": "1774683228683669",
+    "name": "Security Test Cases",
+    "content": "ROLE: You are a Security QA Specialist.\n\nTASK: Generate security-focused test cases for [FEATURE].\n\nSECURITY AREAS:\n- Input validation (SQL injection, XSS)\n- Authentication bypass attempts\n- Authorization checks\n- Session management\n- Data exposure\n\nCONSTRAINTS:\n- Focus on OWASP Top 10 where applicable\n- Do NOT include actual malicious payloads\n- Include expected secure behavior\n\nFORMAT:\n| Test ID | Security Risk | Attack Vector | Expected Secure Behavior |\n\nFEATURE:\n[PASTE FEATURE DESCRIPTION]",
+    "category": "TestCaseCreation"
+  },
+  {
+    "id": "1774683228683350",
+    "name": "Regression Test Suite",
+    "content": "ROLE: You are a QA Lead planning regression testing.\n\nTASK: Generate a regression test suite for [MODULE].\n\nPRIORITIES:\n1. Critical business flows\n2. Previously failed areas\n3. High-risk integrations\n4. Core functionality\n\nCONSTRAINTS:\n- Focus on end-to-end scenarios\n- Include data setup requirements\n- Estimate execution time per test\n\nFORMAT:\n| Test ID | Scenario | Data Setup | Steps | Est. Time | Priority |\n\nMODULE DOCUMENTATION:\n[PASTE DOCS]",
+    "category": "TestCaseCreation"
+  },
+  {
+    "id": "1774683228683890",
+    "name": "Basic Bug Report from Evidence",
+    "content": "ROLE: You are a QA Engineer writing a bug report.\n\nTASK: Generate a bug report based ONLY on the evidence provided.\n\nCONSTRAINTS:\n- Use ONLY information from screenshots/logs\n- Do NOT assume root cause\n- Do NOT invent error codes\n- Mark unknown information as \"[UNKNOWN]\"\n\nFORMAT:\nTitle: [Brief description]\nEnvironment: [From evidence or UNKNOWN]\nSeverity: [Based on impact]\nSteps to Reproduce: [From evidence]\nExpected Result: [From requirements or UNKNOWN]\nActual Result: [From evidence]\nEvidence: [List attachments]\n\nEVIDENCE:\n<<<\n[PASTE SCREENSHOT DESCRIPTION / LOGS]\n>>>",
+    "category": "BugReportTemplate"
+  },
+  {
+    "id": "1774683228683855",
+    "name": "Bug Classification",
+    "content": "ROLE: You are a QA Lead classifying bugs.\n\nTASK: Classify this bug by severity and priority.\n\nSEVERITY DEFINITIONS:\n- Critical: System crash, data loss, security breach\n- High: Major feature broken, no workaround\n- Medium: Feature impaired, workaround exists\n- Low: Minor issue, cosmetic\n\nCONSTRAINTS:\n- Base classification ONLY on provided information\n- If impact is unclear, state \"Needs more information\"\n\nFORMAT:\nSeverity: [Level]\nPriority: [Level]\nJustification: [Based on evidence]\nMissing Information: [What's needed]\n\nBUG DESCRIPTION:\n<<<\n[PASTE BUG DESCRIPTION]\n>>>",
+    "category": "BugReportTemplate"
+  },
+  {
+    "id": "1774683228683444",
+    "name": "Bug Analysis (Chain-of-Thought)",
+    "content": "ROLE: You are a Senior QA Engineer analyzing a bug.\n\nTASK: Analyze this bug report step by step.\n\nANALYSIS STEPS:\nStep 1: Identify reported symptoms\nStep 2: List verified facts from evidence\nStep 3: Identify missing information\nStep 4: List possible causes (if evidence supports)\nStep 5: Recommend next steps\n\nCONSTRAINTS:\n- Do NOT assume root cause without evidence\n- Clearly separate facts from hypotheses\n- Mark speculations as \"Hypothesis\"\n\nBUG REPORT:\n<<<\n[PASTE BUG REPORT]\n>>>",
+    "category": "BugReportTemplate"
+  },
+  {
+    "id": "1774683228683836",
+    "name": "Bug Report Review",
+    "content": "ROLE: You are a QA Lead reviewing bug reports.\n\nTASK: Review this bug report for completeness.\n\nCHECKLIST:\n- [ ] Clear title\n- [ ] Environment specified\n- [ ] Steps are reproducible\n- [ ] Expected vs Actual clear\n- [ ] Evidence attached\n- [ ] Severity justified\n\nCONSTRAINTS:\n- Identify missing information\n- Suggest improvements\n- Do NOT assume missing details\n\nFORMAT:\nCompleteness Score: [X/6]\nMissing Items: [List]\nSuggested Improvements: [List]\n\nBUG REPORT:\n<<<\n[PASTE BUG REPORT]\n>>>",
+    "category": "BugReportTemplate"
+  },
+  {
+    "id": "1774683228683863",
+    "name": "Convert Notes to Bug Report",
+    "content": "ROLE: You are a QA Engineer writing a formal bug report.\n\nTASK: Convert these informal notes into a proper bug report.\n\nCONSTRAINTS:\n- Use ONLY information from the notes\n- Mark gaps as \"[NEEDS CLARIFICATION]\"\n- Do NOT invent details\n- Ask for missing information\n\nFORMAT:\nTitle: \nEnvironment: \nSeverity: \nSteps to Reproduce:\n1.\n2.\n3.\nExpected Result:\nActual Result:\nEvidence Required:\n\nNOTES:\n<<<\n[PASTE INFORMAL NOTES]\n>>>",
+    "category": "BugReportTemplate"
+  },
+  {
+    "id": "177468322868332",
+    "name": "REST API Test Suite",
+    "content": "ROLE: You are an API Testing Specialist.\n\nTASK: Generate a comprehensive test suite for this REST API endpoint.\n\nCOVERAGE AREAS:\n1. Happy path (valid requests)\n2. Input validation (invalid data)\n3. Authentication/Authorization\n4. HTTP methods (allowed vs not allowed)\n5. Response validation\n6. Error handling\n\nCONSTRAINTS:\n- Use ONLY the API documentation provided\n- Use exact status codes from documentation\n- Do NOT assume undocumented behavior\n- Include request/response examples\n\nFORMAT:\n| Test ID | Category | Method | Endpoint | Request | Expected Status | Expected Response |\n\nAPI DOCUMENTATION:\n<<<\n[PASTE API DOCS]\n>>>",
+    "category": "APITestingTemplate"
+  },
+  {
+    "id": "1774683228683388",
+    "name": "API Validation Tests",
+    "content": "ROLE: You are an API QA Engineer.\n\nTASK: Generate input validation test cases for this API endpoint.\n\nVALIDATION SCENARIOS:\n- Required fields missing\n- Invalid data types\n- Boundary values (min/max)\n- Invalid formats (email, phone, date)\n- Special characters\n- Empty strings vs null\n\nCONSTRAINTS:\n- Use field constraints from API spec\n- Include expected error messages if documented\n- Do NOT invent validation rules\n\nFORMAT:\n| Test ID | Field | Invalid Input | Expected Error Code | Expected Message |\n\nAPI SPECIFICATION:\n<<<\n[PASTE SPEC]\n>>>",
+    "category": "APITestingTemplate"
+  },
+  {
+    "id": "1774683228683662",
+    "name": "API Authentication Tests",
+    "content": "ROLE: You are a Security-focused API Tester.\n\nTASK: Generate authentication and authorization test cases.\n\nSCENARIOS:\n- No token/credentials\n- Invalid token\n- Expired token\n- Wrong user permissions\n- Token tampering\n- Rate limiting\n\nCONSTRAINTS:\n- Use authentication method from docs\n- Do NOT include actual tokens in tests\n- Focus on security boundaries\n\nFORMAT:\n| Test ID | Auth Scenario | Request Setup | Expected Status | Security Validation |\n\nAUTH DOCUMENTATION:\n<<<\n[PASTE AUTH DOCS]\n>>>",
+    "category": "APITestingTemplate"
+  },
+  {
+    "id": "1774683228683976",
+    "name": "API Contract Testing",
+    "content": "ROLE: You are an API Contract Testing Specialist.\n\nTASK: Generate contract tests to validate API response structure.\n\nVALIDATIONS:\n- Response schema matches spec\n- Required fields present\n- Data types correct\n- Nullable fields handled\n- Array bounds respected\n\nCONSTRAINTS:\n- Use exact schema from documentation\n- Include positive and negative cases\n- Validate both success and error responses\n\nFORMAT:\n| Test ID | Response Type | Field | Expected Type | Required | Validation |\n\nAPI SCHEMA:\n<<<\n[PASTE JSON SCHEMA OR OPENAPI SPEC]\n>>>",
+    "category": "APITestingTemplate"
+  },
+  {
+    "id": "1774683228683507",
+    "name": "API Performance Test Scenarios",
+    "content": "ROLE: You are a Performance Test Engineer.\n\nTASK: Design performance test scenarios for this API.\n\nSCENARIOS:\n- Baseline (single user)\n- Load test (expected traffic)\n- Stress test (beyond capacity)\n- Spike test (sudden surge)\n- Endurance test (sustained load)\n\nCONSTRAINTS:\n- Base user counts on provided metrics\n- Include realistic think times\n- Define clear pass/fail criteria\n\nFORMAT:\n| Scenario | Users | Duration | Ramp-up | Pass Criteria |\n\nAPI METRICS:\n- Expected RPS: [X]\n- Target response time: [Y]ms\n- Current peak users: [Z]\n\nENDPOINT:\n<<<\n[PASTE ENDPOINT INFO]\n>>>",
+    "category": "APITestingTemplate"
+  }
+]
