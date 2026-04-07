@@ -11,6 +11,26 @@
   --error: #f43f5e;
   --success: #10b981;
   --font-main: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
+  --glass-bg: rgba(15, 23, 42, 0.6);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-shadow: rgba(0, 0, 0, 0.37);
+  --card-hover-bg: rgba(30, 41, 59, 0.8);
+}
+
+[data-theme="light"] {
+  --bg-primary: #f8fafc;
+  --bg-secondary: #f1f5f9;
+  --bg-tertiary: #e2e8f0;
+  --accent-primary: #0284c7;
+  --accent-secondary: #0369a1;
+  --accent-gradient: linear-gradient(135deg, #0284c7 0%, #4f46e5 100%);
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --border-color: rgba(148, 163, 184, 0.5);
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(0, 0, 0, 0.05);
+  --glass-shadow: rgba(0, 0, 0, 0.05);
+  --card-hover-bg: rgba(241, 245, 249, 0.9);
 }
 
 * {
@@ -40,11 +60,11 @@ input, textarea, select {
 }
 
 .glass {
-  background: rgba(15, 23, 42, 0.6);
+  background: var(--glass-bg);
   backdrop-filter: blur(16px) saturate(180%);
   -webkit-backdrop-filter: blur(16px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 8px 32px 0 var(--glass-shadow);
 }
 
 .card-hover {
@@ -53,7 +73,7 @@ input, textarea, select {
 
 .card-hover:hover {
   transform: translateY(-2px);
-  background: rgba(30, 41, 59, 0.8) !important;
+  background: var(--card-hover-bg) !important;
   border-color: var(--accent-primary) !important;
 }
 

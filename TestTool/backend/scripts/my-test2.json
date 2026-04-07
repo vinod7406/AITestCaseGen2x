@@ -1,0 +1,20 @@
+[
+  {
+    "id": "1",
+    "action": "BACK",
+    "locator": "",
+    "value": "https://www.google.com/"
+  },
+  {
+    "id": "2",
+    "action": "TYPE",
+    "locator": "//h1",
+    "value": "hi"
+  },
+  {
+    "id": "1775579982423",
+    "action": "CLICK",
+    "locator": "h1",
+    "value": ""
+  }
+]

@@ -1,0 +1,7 @@
+node_modules/
+.vite/
+dist/
+target/
+.DS_Store
+*.log
+scripts/*.json

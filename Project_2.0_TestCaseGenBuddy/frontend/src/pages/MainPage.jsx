@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Settings, Send, History, Download, Trash2, MessageSquare, Table as TableIcon, Loader, ChevronLeft, ChevronRight, ChevronDown, X } from 'lucide-react';
+import { Settings, Send, History, Download, Trash2, MessageSquare, Table as TableIcon, Loader, ChevronLeft, ChevronRight, ChevronDown, X, Layers, Database, LayoutDashboard, Sun, Moon } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { historyApi, llmApi, settingsApi, templatesApi, contextApi } from '../services/api';
 
@@ -28,6 +28,7 @@ const MainPage = () => {
   const [isResizing, setIsResizing] = useState(false);
   const [collapsedFolders, setCollapsedFolders] = useState([]);
   const [deleteConfirm, setDeleteConfirm] = useState(null); // { id, type, action }
+  const [theme, setTheme] = useState(() => localStorage.getItem('app-theme') || 'dark');
 
   const types = [
     { id: 'functional', label: 'Functional' },
@@ -42,6 +43,15 @@ const MainPage = () => {
     fetchTemplates();
     fetchContexts();
   }, []);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('app-theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'dark' ? 'light' : 'dark');
+  };
 
   const handleMouseDown = (e) => {
     setIsResizing(true);
@@ -310,15 +320,70 @@ const MainPage = () => {
           display: 'flex', 
           alignItems: 'center',
           gap: '12px',
+          justifyContent: isSidebarExpanded ? 'flex-start' : 'center',
+          minHeight: '73px' // Approximate header height match
+        }}>
+          <LayoutDashboard size={24} style={{ color: 'var(--accent-primary)', minWidth: '24px' }} />
+          {isSidebarExpanded && <span style={{ fontWeight: 'bold', fontSize: '1.2rem', whiteSpace: 'nowrap', overflow: 'hidden' }}>TestGen 2.0</span>}
+        </div>
+
+        {/* Navigation Section */}
+        <div style={{ padding: isSidebarExpanded ? '16px 12px' : '16px 8px', borderBottom: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <button 
+            onClick={() => setActiveView('generator')}
+            style={{ 
+              display: 'flex', alignItems: 'center', gap: '12px', padding: '12px', width: '100%',
+              background: activeView === 'generator' ? 'rgba(56, 189, 248, 0.1)' : 'transparent', 
+              color: activeView === 'generator' ? 'var(--accent-primary)' : 'var(--text-secondary)',
+              border: activeView === 'generator' ? '1px solid rgba(56, 189, 248, 0.2)' : '1px solid transparent',
+              borderRadius: '8px', cursor: 'pointer', justifyContent: isSidebarExpanded ? 'flex-start' : 'center'
+            }}
+          >
+            <MessageSquare size={20} style={{ minWidth: '20px' }} />
+            {isSidebarExpanded && <span style={{ fontWeight: activeView === 'generator' ? 'bold' : 'normal', whiteSpace: 'nowrap' }}>Generator</span>}
+          </button>
+          <button 
+            onClick={() => setActiveView('templates_library')}
+            style={{ 
+              display: 'flex', alignItems: 'center', gap: '12px', padding: '12px', width: '100%',
+              background: activeView === 'templates_library' ? 'rgba(56, 189, 248, 0.1)' : 'transparent', 
+              color: activeView === 'templates_library' ? 'var(--accent-primary)' : 'var(--text-secondary)',
+              border: activeView === 'templates_library' ? '1px solid rgba(56, 189, 248, 0.2)' : '1px solid transparent',
+              borderRadius: '8px', cursor: 'pointer', justifyContent: isSidebarExpanded ? 'flex-start' : 'center'
+            }}
+          >
+            <Layers size={20} style={{ minWidth: '20px' }} />
+            {isSidebarExpanded && <span style={{ fontWeight: activeView === 'templates_library' ? 'bold' : 'normal', whiteSpace: 'nowrap' }}>Templates Library</span>}
+          </button>
+          <button 
+            onClick={() => setActiveView('contexts_library')}
+            style={{ 
+              display: 'flex', alignItems: 'center', gap: '12px', padding: '12px', width: '100%',
+              background: activeView === 'contexts_library' ? 'rgba(56, 189, 248, 0.1)' : 'transparent', 
+              color: activeView === 'contexts_library' ? 'var(--accent-primary)' : 'var(--text-secondary)',
+              border: activeView === 'contexts_library' ? '1px solid rgba(56, 189, 248, 0.2)' : '1px solid transparent',
+              borderRadius: '8px', cursor: 'pointer', justifyContent: isSidebarExpanded ? 'flex-start' : 'center'
+            }}
+          >
+            <Database size={20} style={{ minWidth: '20px' }} />
+            {isSidebarExpanded && <span style={{ fontWeight: activeView === 'contexts_library' ? 'bold' : 'normal', whiteSpace: 'nowrap' }}>Context Library</span>}
+          </button>
+        </div>
+
+        <div style={{ 
+          padding: isSidebarExpanded ? '16px 24px 8px' : '16px 8px 8px', 
+          display: 'flex', 
+          alignItems: 'center',
+          gap: '12px',
           justifyContent: isSidebarExpanded ? 'flex-start' : 'center'
         }}>
-          <History size={20} style={{ color: 'var(--accent-primary)' }} />
-          {isSidebarExpanded && <span style={{ fontWeight: 'bold', fontSize: '0.9rem' }}>Chat History</span>}
+          <History size={16} style={{ color: 'var(--text-secondary)', minWidth: '16px' }} />
+          {isSidebarExpanded && <span style={{ fontWeight: '600', fontSize: '0.8rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Recent Chats</span>}
         </div>
         <div style={{ flex: 1, overflowY: 'auto', padding: isSidebarExpanded ? '12px' : '8px' }}>
           {/* New Chat Button */}
           {isSidebarExpanded && (
-            <div style={{ padding: '0 24px 12px' }}>
+            <div style={{ padding: '0 12px 16px' }}>
               <button 
                 onClick={() => { setActiveEntry(null); setActiveView('generator'); }} 
                 style={{ width: '100%', padding: '10px', background: 'var(--accent-primary)', color: 'white', borderRadius: '8px', fontWeight: 'bold' }}
@@ -362,54 +427,26 @@ const MainPage = () => {
 
       {/* Main Content */}
       <main style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '0' }}>
-        <header style={{ padding: '16px 32px', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <header style={{ padding: '24px 32px', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', minHeight: '73px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--accent-primary)' }}>VinodTestGen2.0</h1>
+            <h1 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: 'var(--text-primary)' }}>
+              {activeView === 'generator' ? 'Test Case Generator Workspace' : activeView === 'templates_library' ? 'Prompt Templates Library' : 'Knowledge & Context Library'}
+            </h1>
             <div style={{ height: '20px', width: '1px', background: 'var(--border-color)' }}></div>
-            <span style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>Local-First QA Engine</span>
+            <span style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>VinodTestGen 2.0 Engine</span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
             <button 
-              onClick={() => setActiveView('generator')}
-              style={{ 
-                background: 'transparent', 
-                color: activeView === 'generator' ? 'var(--accent-primary)' : 'var(--text-secondary)',
-                fontWeight: activeView === 'generator' ? 'bold' : 'normal',
-                border: 'none',
-                cursor: 'pointer'
-              }}
+              onClick={toggleTheme}
+              style={{ background: 'transparent', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
             >
-              Generator
+              {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
             </button>
-            <button 
-              onClick={() => setActiveView('templates_library')}
-              style={{ 
-                background: 'transparent', 
-                color: activeView === 'templates_library' ? 'var(--accent-primary)' : 'var(--text-secondary)',
-                fontWeight: activeView === 'templates_library' ? 'bold' : 'normal',
-                border: 'none',
-                cursor: 'pointer'
-              }}
-            >
-              Templates Library
-            </button>
-            <button 
-              onClick={() => setActiveView('contexts_library')}
-              style={{ 
-                background: 'transparent', 
-                color: activeView === 'contexts_library' ? 'var(--accent-primary)' : 'var(--text-secondary)',
-                fontWeight: activeView === 'contexts_library' ? 'bold' : 'normal',
-                border: 'none',
-                cursor: 'pointer'
-              }}
-            >
-              Context Library
-            </button>
+            <Link to="/settings" style={{ color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }}>
+              <Settings size={20} />
+              <span>Settings</span>
+            </Link>
           </div>
-          <Link to="/settings" style={{ color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }}>
-            <Settings size={20} />
-            <span>Settings</span>
-          </Link>
         </header>
 
         {/* Output Area */}

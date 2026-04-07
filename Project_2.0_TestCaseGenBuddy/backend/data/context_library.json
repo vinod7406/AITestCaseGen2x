@@ -26,5 +26,12 @@
     "type": "GEN",
     "content": "this is my login page user name password and Submit button",
     "createdAt": "2026-03-28T07:43:54.887Z"
+  },
+  {
+    "id": "1775032123694",
+    "title": "Screenshot 2026-03-29 at 8.54.30 AM.png",
+    "type": "LOG",
+    "content": "test",
+    "createdAt": "2026-04-01T08:28:43.695Z"
   }
 ]
