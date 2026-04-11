@@ -635,15 +635,15 @@ export default function App() {
                     <div style={{ display: 'flex', gap: '8px' }}>
                         <button 
                             onClick={handleAddToContextLibrary}
-                            style={{ padding: '10px 16px', borderRadius: '12px', border: '1px solid #e2e8f0', background: '#fff', fontWeight: '700', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '8px', color: '#16a34a' }}
+                            style={{ padding: '8px 14px', borderRadius: '8px', border: '1px solid #e2e8f0', background: '#fff', fontWeight: '700', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '6px', color: '#16a34a' }}
                         >
-                            <BookOpen size={18} /> Add to Context Library
+                            <BookOpen size={16} /> Add to Context Library
                         </button>
                         <button 
                             onClick={handleDownloadMd}
-                            style={{ padding: '10px 16px', borderRadius: '12px', border: '1px solid #e2e8f0', background: '#fff', fontWeight: '700', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '8px' }}
+                            style={{ padding: '8px 14px', borderRadius: '8px', border: '1px solid #e2e8f0', background: '#fff', fontWeight: '700', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '6px' }}
                         >
-                            <Download size={18} /> Download .md
+                            <Download size={16} /> Download .md
                         </button>
                         <button 
                             disabled={publishLoading}
@@ -651,11 +651,11 @@ export default function App() {
                                 setPublishSuccess(null);
                                 setShowConfluenceModal(true);
                             }}
-                            style={{ padding: '10px 24px', borderRadius: '12px', background: '#2563eb', color: '#fff', fontWeight: '700', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '8px' }}
+                            style={{ padding: '8px 16px', borderRadius: '8px', background: '#2563eb', color: '#fff', fontWeight: '700', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '6px' }}
                         >
                             {publishLoading ? 'Publishing...' : (
                                 <>
-                                    <Share2 size={18} /> Publish to Confluence
+                                    <Share2 size={16} /> Publish to Confluence
                                 </>
                             )}
                         </button>
