@@ -614,7 +614,7 @@ export default function App() {
         return (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
             <div style={{ background: '#fff', borderRadius: '16px', border: '1px solid #e2e8f0', padding: '40px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '32px' }}>
                     <div>
                         <h2 style={{ fontSize: '1.5rem', fontWeight: '800' }}>Generated Test Plan</h2>
                         <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
