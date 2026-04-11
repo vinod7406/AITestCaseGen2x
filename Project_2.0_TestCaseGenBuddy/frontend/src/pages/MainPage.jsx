@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Settings, Send, History, Download, Trash2, MessageSquare, Table as TableIcon, Loader, ChevronLeft, ChevronRight, ChevronDown, X, Layers, Database, LayoutDashboard, Sun, Moon } from 'lucide-react';
+import { Settings, Send, History, Download, Trash2, Edit2, MessageSquare, Table as TableIcon, Loader, ChevronLeft, ChevronRight, ChevronDown, X, Layers, Database, LayoutDashboard, Sun, Moon } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { historyApi, llmApi, settingsApi, templatesApi, contextApi } from '../services/api';
 
@@ -22,6 +22,7 @@ const MainPage = () => {
   const [showContextModal, setShowContextModal] = useState(false);
   const [newTemplate, setNewTemplate] = useState({ name: '', content: '', category: 'General' });
   const [newContext, setNewContext] = useState({ title: '', type: 'PRD', content: '', files: [] });
+  const [editContextModal, setEditContextModal] = useState(null);
   const [activeView, setActiveView] = useState('generator'); // generator, templates_library, contexts_library
   const [previewTemplate, setPreviewTemplate] = useState(null);
   const [inputHeight, setInputHeight] = useState(150);
@@ -237,6 +238,20 @@ const MainPage = () => {
       setNewContext({ title: '', type: 'PRD', content: '' });
       fetchContexts();
     } catch (err) { alert('Failed to save context item'); }
+  };
+
+  const handleEditContextSave = async () => {
+    if (!editContextModal.title || !editContextModal.content) return;
+    try {
+      await contextApi.update(editContextModal.id, {
+          title: editContextModal.title,
+          type: editContextModal.type,
+          content: editContextModal.content
+      });
+      setEditContextModal(null);
+      fetchContexts();
+      setAttachedContexts(prev => prev.map(c => c.id === editContextModal.id ? { ...c, ...editContextModal } : c));
+    } catch (err) { alert('Failed to update context item'); }
   };
 
   const deleteTemplate = async (id, e) => {
@@ -704,9 +719,14 @@ const MainPage = () => {
                                   <h3 style={{ fontSize: '1.1rem', color: 'var(--accent-primary)' }}>{ctx.title}</h3>
                                   <span style={{ fontSize: '0.75rem', background: 'rgba(56, 189, 248, 0.1)', color: 'var(--accent-primary)', padding: '2px 8px', borderRadius: '4px' }}>{ctx.type}</span>
                                 </div>
-                                <button onClick={(e) => deleteContext(ctx.id, e)} style={{ background: 'transparent', color: 'var(--text-secondary)' }}>
-                                   <Trash2 size={16} />
-                                </button>
+                                <div style={{ display: 'flex', gap: '8px' }}>
+                                  <button onClick={(e) => { e.stopPropagation(); setEditContextModal({...ctx}); }} style={{ background: 'transparent', color: 'var(--text-secondary)' }}>
+                                     <Edit2 size={16} />
+                                  </button>
+                                  <button onClick={(e) => deleteContext(ctx.id, e)} style={{ background: 'transparent', color: 'var(--text-secondary)' }}>
+                                     <Trash2 size={16} />
+                                  </button>
+                                </div>
                               </div>
                               {ctx.files && ctx.files.length > 0 && (
                                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '8px' }}>
@@ -989,6 +1009,64 @@ const MainPage = () => {
                 style={{ padding: '12px 24px', borderRadius: '12px', background: 'var(--accent-primary)', color: 'white', fontWeight: 'bold' }}
               >
                 Create Asset
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {editContextModal && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100 }}>
+          <div className="glass" style={{ width: '500px', padding: '32px', borderRadius: '16px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+            <h2 style={{ fontSize: '1.5rem', color: 'var(--accent-primary)' }}>Edit Knowledge Asset</h2>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <label style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', fontWeight: 'bold' }}>Asset Title</label>
+              <input 
+                type="text"
+                value={editContextModal.title} 
+                onChange={e => setEditContextModal({...editContextModal, title: e.target.value})}
+                style={{ padding: '12px', background: 'var(--bg-primary)', border: '1px solid var(--border-color)', borderRadius: '8px', color: 'white' }}
+              />
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <label style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', fontWeight: 'bold' }}>Asset Category</label>
+              <select 
+                value={editContextModal.type} 
+                onChange={e => setEditContextModal({...editContextModal, type: e.target.value})}
+                style={{ padding: '12px', background: 'var(--bg-primary)', border: '1px solid var(--border-color)', borderRadius: '8px', color: 'white' }}
+              >
+                <option value="PRD">📄 PRD / Specification</option>
+                <option value="API">🔌 API Documentation</option>
+                <option value="LOG">🗄️ System Logs</option>
+                <option value="UX">🎨 UI/UX Mockup</option>
+                <option value="GEN">💡 General Knowledge</option>
+                <option value="Template">🎯 Plan Template</option>
+              </select>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <label style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', fontWeight: 'bold' }}>Context Description</label>
+              <textarea 
+                value={editContextModal.content} 
+                onChange={e => setEditContextModal({...editContextModal, content: e.target.value})}
+                style={{ padding: '12px', background: 'var(--bg-primary)', border: '1px solid var(--border-color)', borderRadius: '8px', color: 'white', height: '200px' }}
+              />
+            </div>
+
+            <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end', marginTop: '12px' }}>
+              <button 
+                onClick={() => setEditContextModal(null)} 
+                style={{ padding: '12px 24px', borderRadius: '12px', border: '1px solid var(--border-color)', color: 'white' }}
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={handleEditContextSave} 
+                style={{ padding: '12px 24px', borderRadius: '12px', background: 'var(--accent-primary)', color: 'white', fontWeight: 'bold' }}
+              >
+                Save Changes
               </button>
             </div>
           </div>

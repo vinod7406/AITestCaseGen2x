@@ -45,4 +45,22 @@ router.delete('/:id', (req, res) => {
     }
 });
 
+router.put('/:id', (req, res) => {
+    try {
+        const { id } = req.params;
+        const { title, type, content } = req.body;
+        let contexts = JSON.parse(fs.readFileSync(CONTEXT_FILE, 'utf-8'));
+        const index = contexts.findIndex((c: any) => c.id === id);
+        if (index !== -1) {
+            contexts[index] = { ...contexts[index], title, type, content, updatedAt: new Date() };
+            fs.writeFileSync(CONTEXT_FILE, JSON.stringify(contexts, null, 2));
+            res.json(contexts[index]);
+        } else {
+            res.status(404).json({ error: 'Context not found' });
+        }
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to update context item' });
+    }
+});
+
 export default router;

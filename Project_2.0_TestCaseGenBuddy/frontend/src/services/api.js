@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:5001/api',
+  baseURL: 'http://localhost:5006/api',
 });
 
 export const settingsApi = {
@@ -31,6 +31,7 @@ export const templatesApi = {
 export const contextApi = {
   getAll: () => api.get('/context'),
   save: (data) => api.post('/context', data),
+  update: (id, data) => api.put(`/context/${id}`, data),
   remove: (id) => api.delete(`/context/${id}`),
 };
 
