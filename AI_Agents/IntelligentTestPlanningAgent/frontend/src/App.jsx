@@ -304,6 +304,29 @@ export default function App() {
     }
   };
 
+  const handleAddToContextLibrary = async () => {
+    try {
+        const title = `AI Test Plan - ${fetchParams.product || fetchParams.projectKey || 'Generated'}`;
+        const response = await fetch('http://localhost:5006/api/context', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                title: title,
+                type: 'Template',
+                content: generatedPlan,
+            })
+        });
+        if (response.ok) {
+            alert("Successfully added to Test Case Generator Context Library!");
+        } else {
+            alert("Failed to add to Context Library. Ensure Test Case Generator backend is running.");
+        }
+    } catch (err) {
+        alert("Network error connecting to Test Case Generator API.");
+        console.error(err);
+    }
+  };
+
   const handleDownloadMd = () => {
     const element = document.createElement("a");
     const file = new Blob([generatedPlan], {type: 'text/markdown'});
@@ -609,10 +632,16 @@ export default function App() {
                             </button>
                         </div>
                     </div>
-                    <div style={{ display: 'flex', gap: '12px' }}>
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                        <button 
+                            onClick={handleAddToContextLibrary}
+                            style={{ padding: '10px 16px', borderRadius: '12px', border: '1px solid #e2e8f0', background: '#fff', fontWeight: '700', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '8px', color: '#16a34a' }}
+                        >
+                            <BookOpen size={18} /> Add to Context Library
+                        </button>
                         <button 
                             onClick={handleDownloadMd}
-                            style={{ padding: '10px 20px', borderRadius: '12px', border: '1px solid #e2e8f0', background: '#fff', fontWeight: '700', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '8px' }}
+                            style={{ padding: '10px 16px', borderRadius: '12px', border: '1px solid #e2e8f0', background: '#fff', fontWeight: '700', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '8px' }}
                         >
                             <Download size={18} /> Download .md
                         </button>
