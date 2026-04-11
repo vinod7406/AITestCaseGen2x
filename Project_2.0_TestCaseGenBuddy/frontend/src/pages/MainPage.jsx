@@ -569,8 +569,8 @@ const MainPage = () => {
                     marginBottom: '24px', 
                     padding: '20px', 
                     borderRadius: '16px', 
-                    background: 'rgba(255,255,255,0.02)',
-                    border: '1px solid rgba(255,255,255,0.05)'
+                    background: 'var(--bg-secondary)',
+                    border: '1px solid var(--border-color)'
                   }}
                 >
                   <div 
@@ -580,13 +580,13 @@ const MainPage = () => {
                       alignItems: 'center', 
                       gap: '12px', 
                       paddingBottom: collapsedFolders.includes(category) ? '0' : '16px', 
-                      borderBottom: collapsedFolders.includes(category) ? 'none' : '1px solid rgba(255,255,255,0.05)',
+                      borderBottom: collapsedFolders.includes(category) ? 'none' : '1px solid var(--border-color)',
                       cursor: 'pointer',
                       userSelect: 'none'
                     }}
                   >
                     {collapsedFolders.includes(category) ? <ChevronRight size={20} /> : <ChevronDown size={20} />}
-                    <h3 style={{ fontSize: '1.25rem', color: 'white', fontWeight: 'bold' }}>{category}</h3>
+                    <h3 style={{ fontSize: '1.25rem', color: 'var(--text-primary)', fontWeight: 'bold' }}>{category}</h3>
                     <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginLeft: 'auto' }}>
                       {templates.filter(tmp => (tmp.category || 'General') === category).length} Templates
                     </span>
@@ -606,7 +606,7 @@ const MainPage = () => {
                           display: 'flex', 
                           flexDirection: 'column', 
                           gap: '12px',
-                          border: '1px solid rgba(255,255,255,0.08)',
+                          border: '1px solid var(--border-color)',
                           transition: 'all 0.3s',
                           cursor: 'grab'
                         }}
@@ -627,7 +627,7 @@ const MainPage = () => {
                           flex: 1, 
                           padding: '10px', 
                           borderRadius: '8px', 
-                          background: 'rgba(255,255,255,0.05)',
+                          background: 'var(--bg-tertiary)',
                           color: 'var(--text-secondary)',
                           fontWeight: '600'
                         }}
@@ -673,8 +673,8 @@ const MainPage = () => {
                     marginBottom: '24px', 
                     padding: '20px', 
                     borderRadius: '16px', 
-                    background: 'rgba(255,255,255,0.02)',
-                    border: '1px solid rgba(255,255,255,0.05)'
+                    background: 'var(--bg-secondary)',
+                    border: '1px solid var(--border-color)'
                   }}
                 >
                   <div 
@@ -684,13 +684,13 @@ const MainPage = () => {
                       alignItems: 'center', 
                       gap: '12px', 
                       paddingBottom: collapsedFolders.includes(`Context_${category}`) ? '0' : '16px', 
-                      borderBottom: collapsedFolders.includes(`Context_${category}`) ? 'none' : '1px solid rgba(255,255,255,0.05)',
+                      borderBottom: collapsedFolders.includes(`Context_${category}`) ? 'none' : '1px solid var(--border-color)',
                       cursor: 'pointer',
                       userSelect: 'none'
                     }}
                   >
                     {collapsedFolders.includes(`Context_${category}`) ? <ChevronRight size={20} /> : <ChevronDown size={20} />}
-                    <h3 style={{ fontSize: '1.25rem', color: 'white', fontWeight: 'bold' }}>{category === 'PRD' || category === 'API' || category === 'LOG' || category === 'UX' || category === 'GEN' ? category : category} Assets</h3>
+                    <h3 style={{ fontSize: '1.25rem', color: 'var(--text-primary)', fontWeight: 'bold' }}>{category === 'PRD' || category === 'API' || category === 'LOG' || category === 'UX' || category === 'GEN' ? category : category} Assets</h3>
                     <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginLeft: 'auto' }}>
                       {contexts.filter(ctx => (ctx.type || 'General') === category).length} Items
                     </span>
@@ -710,7 +710,7 @@ const MainPage = () => {
                                 display: 'flex', 
                                 flexDirection: 'column', 
                                 gap: '12px',
-                                border: isAttached ? '2px solid var(--accent-primary)' : '1px solid rgba(255,255,255,0.08)',
+                                border: isAttached ? '2px solid var(--accent-primary)' : '1px solid var(--border-color)',
                                 transition: 'all 0.3s'
                               }}
                             >
@@ -731,7 +731,7 @@ const MainPage = () => {
                               {ctx.files && ctx.files.length > 0 && (
                                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '8px' }}>
                                   {ctx.files.map((f, i) => (
-                                    <span key={i} style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', background: 'rgba(255,255,255,0.05)', padding: '2px 6px', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.1)' }}>📎 {f}</span>
+                                    <span key={i} style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', background: 'var(--bg-tertiary)', padding: '2px 6px', borderRadius: '4px', border: '1px solid var(--border-color)' }}>📎 {f}</span>
                                   ))}
                                 </div>
                               )}
@@ -745,7 +745,7 @@ const MainPage = () => {
                                   padding: '10px', 
                                   borderRadius: '8px', 
                                   background: isAttached ? 'var(--accent-primary)' : 'var(--bg-tertiary)',
-                                  color: 'white',
+                                  color: isAttached ? 'white' : 'var(--text-primary)',
                                   fontWeight: '600'
                                 }}
                               >
@@ -796,7 +796,7 @@ const MainPage = () => {
               <select 
                 value={selectedProvider} 
                 onChange={(e) => setSelectedProvider(e.target.value)}
-                style={{ background: 'var(--bg-primary)', color: 'white', border: '1px solid var(--border-color)', padding: '6px 10px', borderRadius: '6px' }}
+                style={{ background: 'var(--bg-primary)', color: 'var(--text-primary)', border: '1px solid var(--border-color)', padding: '6px 10px', borderRadius: '6px' }}
               >
                 {providers.map(p => <option key={p} value={p}>{p}</option>)}
               </select>
@@ -843,7 +843,7 @@ const MainPage = () => {
                   flex: 1, 
                   height: `${inputHeight}px`, 
                   background: 'var(--bg-primary)', 
-                  color: 'white', 
+                  color: 'var(--text-primary)', 
                   border: '1px solid var(--border-color)', 
                   borderRadius: '12px', 
                   padding: '16px',
@@ -898,7 +898,7 @@ const MainPage = () => {
             <div style={{ 
                 flex: 1, 
                 overflowY: 'auto', 
-                background: 'rgba(0,0,0,0.3)', 
+                background: 'var(--bg-secondary)', 
                 padding: '24px', 
                 borderRadius: '12px',
                 border: '1px solid var(--border-color)',
@@ -935,22 +935,22 @@ const MainPage = () => {
               placeholder="Template Name (e.g. API Functional Tests)" 
               value={newTemplate.name} 
               onChange={e => setNewTemplate({...newTemplate, name: e.target.value})}
-              style={{ padding: '12px', background: 'var(--bg-primary)', border: '1px solid var(--border-color)', borderRadius: '8px', color: 'white' }}
+              style={{ padding: '12px', background: 'var(--bg-primary)', border: '1px solid var(--border-color)', borderRadius: '8px', color: 'var(--text-primary)' }}
             />
             <input 
               placeholder="Folder/Category (e.g. API, Functional, UI)" 
               value={newTemplate.category || ''} 
               onChange={e => setNewTemplate({...newTemplate, category: e.target.value})}
-              style={{ padding: '12px', background: 'var(--bg-primary)', border: '1px solid var(--border-color)', borderRadius: '8px', color: 'white' }}
+              style={{ padding: '12px', background: 'var(--bg-primary)', border: '1px solid var(--border-color)', borderRadius: '8px', color: 'var(--text-primary)' }}
             />
             <textarea 
               placeholder="Prompt Content..." 
               value={newTemplate.content} 
               onChange={e => setNewTemplate({...newTemplate, content: e.target.value})}
-              style={{ padding: '12px', background: 'var(--bg-primary)', border: '1px solid var(--border-color)', borderRadius: '8px', color: 'white', height: '200px' }}
+              style={{ padding: '12px', background: 'var(--bg-primary)', border: '1px solid var(--border-color)', borderRadius: '8px', color: 'var(--text-primary)', height: '200px' }}
             />
             <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
-              <button onClick={() => setShowTemplateModal(false)} style={{ padding: '10px 20px', borderRadius: '8px', border: '1px solid var(--border-color)', color: 'white' }}>Cancel</button>
+              <button onClick={() => setShowTemplateModal(false)} style={{ padding: '10px 20px', borderRadius: '8px', border: '1px solid var(--border-color)', color: 'var(--text-primary)' }}>Cancel</button>
               <button onClick={handleAddTemplate} style={{ padding: '10px 20px', borderRadius: '8px', background: 'var(--accent-primary)', color: 'white' }}>Save Template</button>
             </div>
           </div>
@@ -967,7 +967,7 @@ const MainPage = () => {
               <select 
                 value={newContext.type} 
                 onChange={e => setNewContext({...newContext, type: e.target.value})}
-                style={{ padding: '12px', background: 'var(--bg-primary)', border: '1px solid var(--border-color)', borderRadius: '8px', color: 'white' }}
+                style={{ padding: '12px', background: 'var(--bg-primary)', border: '1px solid var(--border-color)', borderRadius: '8px', color: 'var(--text-primary)' }}
               >
                 <option value="PRD">📄 PRD / Specification</option>
                 <option value="API">🔌 API Documentation</option>
@@ -983,7 +983,7 @@ const MainPage = () => {
                 type="file" 
                 multiple
                 onChange={e => setNewContext({...newContext, files: Array.from(e.target.files).map(f => f.name), title: Array.from(e.target.files).map(f => f.name).join(', ') || newContext.title})}
-                style={{ padding: '10px', background: 'rgba(255,255,255,0.05)', borderRadius: '8px', color: 'var(--text-secondary)' }}
+                style={{ padding: '10px', background: 'var(--bg-tertiary)', borderRadius: '8px', color: 'var(--text-secondary)' }}
               />
             </div>
 
@@ -993,14 +993,14 @@ const MainPage = () => {
                 placeholder="Paste content or describe the requirement..." 
                 value={newContext.content} 
                 onChange={e => setNewContext({...newContext, content: e.target.value, title: newContext.files.length > 0 ? newContext.title : e.target.value.substring(0, 30)})}
-                style={{ padding: '12px', background: 'var(--bg-primary)', border: '1px solid var(--border-color)', borderRadius: '8px', color: 'white', height: '150px' }}
+                style={{ padding: '12px', background: 'var(--bg-primary)', border: '1px solid var(--border-color)', borderRadius: '8px', color: 'var(--text-primary)', height: '150px' }}
               />
             </div>
 
             <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end', marginTop: '12px' }}>
               <button 
                 onClick={() => setShowContextModal(false)} 
-                style={{ padding: '12px 24px', borderRadius: '12px', border: '1px solid var(--border-color)', color: 'white' }}
+                style={{ padding: '12px 24px', borderRadius: '12px', border: '1px solid var(--border-color)', color: 'var(--text-primary)' }}
               >
                 Cancel
               </button>
@@ -1026,7 +1026,7 @@ const MainPage = () => {
                 type="text"
                 value={editContextModal.title} 
                 onChange={e => setEditContextModal({...editContextModal, title: e.target.value})}
-                style={{ padding: '12px', background: 'var(--bg-primary)', border: '1px solid var(--border-color)', borderRadius: '8px', color: 'white' }}
+                style={{ padding: '12px', background: 'var(--bg-primary)', border: '1px solid var(--border-color)', borderRadius: '8px', color: 'var(--text-primary)' }}
               />
             </div>
 
@@ -1035,7 +1035,7 @@ const MainPage = () => {
               <select 
                 value={editContextModal.type} 
                 onChange={e => setEditContextModal({...editContextModal, type: e.target.value})}
-                style={{ padding: '12px', background: 'var(--bg-primary)', border: '1px solid var(--border-color)', borderRadius: '8px', color: 'white' }}
+                style={{ padding: '12px', background: 'var(--bg-primary)', border: '1px solid var(--border-color)', borderRadius: '8px', color: 'var(--text-primary)' }}
               >
                 <option value="PRD">📄 PRD / Specification</option>
                 <option value="API">🔌 API Documentation</option>
@@ -1051,14 +1051,14 @@ const MainPage = () => {
               <textarea 
                 value={editContextModal.content} 
                 onChange={e => setEditContextModal({...editContextModal, content: e.target.value})}
-                style={{ padding: '12px', background: 'var(--bg-primary)', border: '1px solid var(--border-color)', borderRadius: '8px', color: 'white', height: '200px' }}
+                style={{ padding: '12px', background: 'var(--bg-primary)', border: '1px solid var(--border-color)', borderRadius: '8px', color: 'var(--text-primary)', height: '200px' }}
               />
             </div>
 
             <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end', marginTop: '12px' }}>
               <button 
                 onClick={() => setEditContextModal(null)} 
-                style={{ padding: '12px 24px', borderRadius: '12px', border: '1px solid var(--border-color)', color: 'white' }}
+                style={{ padding: '12px 24px', borderRadius: '12px', border: '1px solid var(--border-color)', color: 'var(--text-primary)' }}
               >
                 Cancel
               </button>
@@ -1082,18 +1082,18 @@ const MainPage = () => {
           to { transform: rotate(360deg); }
         }
         .entry-card:hover {
-          background: rgba(255, 255, 255, 0.05) !important;
+          background: var(--card-hover-bg) !important;
         }
         .glass {
-          background: rgba(255, 255, 255, 0.03);
+          background: var(--glass-bg);
           backdrop-filter: blur(12px);
           -webkit-backdrop-filter: blur(12px);
-          border: 1px solid rgba(255, 255, 255, 0.08);
+          border: 1px solid var(--glass-border);
         }
         .template-card:hover {
           transform: translateY(-4px);
-          background: rgba(255, 255, 255, 0.05);
-          box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+          background: var(--card-hover-bg);
+          box-shadow: 0 10px 30px var(--glass-shadow);
         }
       `}</style>
       {deleteConfirm && (
