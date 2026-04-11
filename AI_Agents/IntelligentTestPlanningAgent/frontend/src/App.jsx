@@ -903,6 +903,18 @@ export default function App() {
         );
     }
 
+    if (activeTab === 'Test Case Generator') {
+        return (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100%', width: '100%' }}>
+                <iframe 
+                    src="http://localhost:5177" 
+                    style={{ flex: 1, width: '100%', height: '100%', border: 'none', background: '#fff' }}
+                    title="Test Case Generator"
+                />
+            </motion.div>
+        );
+    }
+
     return (
         <section style={{ flex: 1, padding: '0 64px 64px', maxWidth: '1000px', width: '100%' }}>
             <AnimatePresence mode="wait">
@@ -947,6 +959,13 @@ export default function App() {
                 onClick={() => { setActiveTab('Intelligent Test Planning Agent'); setStep(1); }} 
                 collapsed={collapsed} 
             />
+            <SidebarItem 
+                icon={Zap} 
+                label="Test Case Generator" 
+                active={activeTab === 'Test Case Generator'} 
+                onClick={() => { setActiveTab('Test Case Generator'); }} 
+                collapsed={collapsed} 
+            />
         </div>
 
         <button 
@@ -959,42 +978,47 @@ export default function App() {
 
       {/* Main Content */}
       <main style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
-        <header style={{ padding: '40px 64px 20px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '40px' }}>
-                <div style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
-                    <div style={{ width: '64px', height: '64px', background: '#eff6ff', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#2563eb' }}>
-                        <Target size={32} />
+        {activeTab !== 'Test Case Generator' && (
+            <header style={{ padding: '40px 64px 20px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '40px' }}>
+                    <div style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
+                        <div style={{ width: '64px', height: '64px', background: '#eff6ff', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#2563eb' }}>
+                            <Target size={32} />
+                        </div>
+                        <div>
+                            <h1 style={{ fontSize: '2rem', fontWeight: '800', color: '#1e293b' }}>{activeTab}</h1>
+                            <p style={{ color: '#64748b', fontSize: '1rem' }}>
+                                {activeTab === 'Intelligent Test Planning Agent' ? 'Generate comprehensive test plans from Jira requirements using AI' : 
+                                 activeTab === 'Curriculum' ? 'Access specialized test strategies and industry templates' :
+                                 activeTab === 'Dashboard' ? 'Manage your connected test architecture and tools' :
+                                 activeTab === 'History' ? 'Review and manage your past AI-generated test plans' :
+                                 'Configure your AI and synchronization settings'}
+                            </p>
+                        </div>
                     </div>
-                    <div>
-                        <h1 style={{ fontSize: '2rem', fontWeight: '800', color: '#1e293b' }}>{activeTab}</h1>
-                        <p style={{ color: '#64748b', fontSize: '1rem' }}>
-                            {activeTab === 'Intelligent Test Planning Agent' ? 'Generate comprehensive test plans from Jira requirements using AI' : 
-                             activeTab === 'Curriculum' ? 'Access specialized test strategies and industry templates' :
-                             activeTab === 'Dashboard' ? 'Manage your connected test architecture and tools' :
-                             activeTab === 'History' ? 'Review and manage your past AI-generated test plans' :
-                             'Configure your AI and synchronization settings'}
-                        </p>
-                    </div>
+                    {activeTab !== 'History' && (
+                        <button 
+                            onClick={() => setActiveTab('History')}
+                            style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', borderRadius: '12px', border: '1px solid #2563eb', background: 'transparent', color: '#2563eb', fontWeight: '700', fontSize: '0.9rem' }}
+                        >
+                            <History size={18} /> View History
+                        </button>
+                    )}
                 </div>
-                {activeTab !== 'History' && (
-                    <button 
-                        onClick={() => setActiveTab('History')}
-                        style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', borderRadius: '12px', border: '1px solid #2563eb', background: 'transparent', color: '#2563eb', fontWeight: '700', fontSize: '0.9rem' }}
-                    >
-                        <History size={18} /> View History
-                    </button>
-                )}
-            </div>
-            
-            {activeTab === 'Intelligent Test Planning Agent' && <Stepper currentStep={step} onStepClick={(s) => setStep(s)} />}
-        </header>
+                
+                {activeTab === 'Intelligent Test Planning Agent' && <Stepper currentStep={step} onStepClick={(s) => setStep(s)} />}
+            </header>
+        )}
 
         {renderContent()}
 
-        <footer style={{ padding: '20px 64px', borderTop: '1px solid #e2e8f0', background: '#fff', display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
-             <p style={{ color: '#94a3b8', fontSize: '0.75rem' }}>© 2026 TestingBuddy AI • Powered by Advanced GenAI</p>
-        </footer>
+        {activeTab !== 'Test Case Generator' && (
+            <footer style={{ padding: '20px 64px', borderTop: '1px solid #e2e8f0', background: '#fff', display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: 'auto' }}>
+                 <p style={{ color: '#94a3b8', fontSize: '0.75rem' }}>© 2026 TestingBuddy AI • Powered by Advanced GenAI</p>
+            </footer>
+        )}
       </main>
     </div>
   );
 }
+
