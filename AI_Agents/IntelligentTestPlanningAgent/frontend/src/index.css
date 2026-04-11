@@ -79,6 +79,15 @@ label {
 .fade-enter { opacity: 0; transform: translateY(10px); }
 .fade-enter-active { opacity: 1; transform: translateY(0); transition: all 0.3s ease; }
 
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
 ::-webkit-scrollbar {
   width: 6px;
 }
@@ -91,4 +100,91 @@ label {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
+}
+
+/* Markdown Preview Styling */
+.markdown-preview {
+  color: #1e293b;
+  line-height: 1.8;
+}
+
+.markdown-preview h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  margin: 2rem 0 1.5rem;
+  color: #0f172a;
+  border-bottom: 2px solid #f1f5f9;
+  padding-bottom: 0.75rem;
+}
+
+.markdown-preview h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 2rem 0 1rem;
+  color: #1e293b;
+}
+
+.markdown-preview h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 1.5rem 0 0.75rem;
+  color: #334155;
+}
+
+.markdown-preview p {
+  margin-bottom: 1.25rem;
+}
+
+.markdown-preview ul, .markdown-preview ol {
+  margin: 0 0 1.5rem 1.5rem;
+}
+
+.markdown-preview li {
+  margin-bottom: 0.5rem;
+}
+
+.markdown-preview strong {
+  color: #0f172a;
+  font-weight: 700;
+}
+
+.markdown-preview code {
+  background: #f1f5f9;
+  padding: 0.2em 0.4em;
+  border-radius: 6px;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 0.85em;
+  color: #e11d48;
+}
+
+.markdown-preview blockquote {
+  border-left: 4px solid #3b82f6;
+  background: #f8fafc;
+  padding: 1rem 1.5rem;
+  margin: 1.5rem 0;
+  border-radius: 0 12px 12px 0;
+  color: #64748b;
+  font-style: italic;
+}
+
+.markdown-preview table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+}
+
+.markdown-preview th, .markdown-preview td {
+  padding: 12px 16px;
+  border: 1px solid #e2e8f0;
+  text-align: left;
+}
+
+.markdown-preview th {
+  background: #f8fafc;
+  font-weight: 700;
+  color: #475569;
 }
