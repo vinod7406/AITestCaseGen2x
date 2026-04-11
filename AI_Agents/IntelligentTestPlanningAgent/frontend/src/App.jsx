@@ -919,9 +919,34 @@ export default function App() {
                         </button>
                         <button 
                             style={{ background: '#2563eb', color: '#fff', padding: '12px 24px', borderRadius: '8px', fontWeight: '600', flex: 1 }}
-                            onClick={() => {
+                            onClick={async () => {
                                 localStorage.setItem('llm_config', JSON.stringify(llmConfig));
-                                setLlmMessage('Settings saved locally!');
+                                
+                                // Sync to Test Case Generator
+                                try {
+                                    const mapProviderName = (p) => {
+                                       if (p === 'Ollama') return 'ollama';
+                                       if (p === 'LM Studio') return 'lmStudio';
+                                       return p.toLowerCase();
+                                    };
+                                    const payloadKey = mapProviderName(llmConfig.provider);
+                                    
+                                    await fetch('http://localhost:5006/api/settings', {
+                                        method: 'PUT',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({
+                                            defaultProvider: payloadKey,
+                                            [payloadKey]: {
+                                                baseUrl: llmConfig.baseUrl,
+                                                apiKey: llmConfig.apiKey,
+                                                model: llmConfig.model
+                                            }
+                                        })
+                                    });
+                                    setLlmMessage('Settings saved across all AI Agents!');
+                                } catch (e) {
+                                    setLlmMessage('Settings saved locally. Note: Test Case Generator sync failed.');
+                                }
                             }}
                         >
                             Save AI Config
