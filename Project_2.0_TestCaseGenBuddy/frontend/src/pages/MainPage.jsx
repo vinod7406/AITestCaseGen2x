@@ -442,10 +442,6 @@ const MainPage = () => {
             >
               {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
             </button>
-            <Link to="/settings" style={{ color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }}>
-              <Settings size={20} />
-              <span>Settings</span>
-            </Link>
           </div>
         </header>
 
