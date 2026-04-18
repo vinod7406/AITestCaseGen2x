@@ -352,7 +352,8 @@ export default function App() {
   const handleAddToContextLibrary = async () => {
     try {
         const title = `AI Test Plan - ${fetchParams.product || fetchParams.projectKey || 'Generated'}`;
-        const response = await fetch('https://tc-backend-mu.vercel.app/api/context', {
+        const targetBackend = import.meta.env.PROD ? 'https://tc-backend-mu.vercel.app/api' : 'http://localhost:5006/api';
+        const response = await fetch(`${targetBackend}/context`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

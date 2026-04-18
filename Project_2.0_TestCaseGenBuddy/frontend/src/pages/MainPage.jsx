@@ -666,12 +666,19 @@ const MainPage = () => {
             <div className="fade-in">
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
                 <h2 style={{ fontSize: '1.5rem' }}>Context Library</h2>
-                <button 
-                  onClick={() => setShowContextModal(true)}
-                  style={{ padding: '10px 24px', background: 'var(--accent-primary)', color: 'white', borderRadius: '8px', fontWeight: 'bold' }}
-                >
-                  + Add Knowledge Asset
-                </button>
+                  <button 
+                    onClick={fetchContexts}
+                    style={{ padding: '10px', background: 'var(--bg-tertiary)', color: 'var(--text-secondary)', borderRadius: '8px', border: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                    title="Refresh Library"
+                  >
+                    <RefreshCw size={20} />
+                  </button>
+                  <button 
+                    onClick={() => setShowContextModal(true)}
+                    style={{ padding: '10px 24px', background: 'var(--accent-primary)', color: 'white', borderRadius: '8px', fontWeight: 'bold' }}
+                  >
+                    + Add Knowledge Asset
+                  </button>
               </div>
               {Array.from(new Set(contexts.map(c => c.type || 'General'))).map(category => (
                 <div 
@@ -705,8 +712,8 @@ const MainPage = () => {
 
                   {!collapsedFolders.includes(`Context_${category}`) && (
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '24px', marginTop: '24px' }}>
-                      {contexts.filter(ctx => (ctx.type || 'General') === category).map(ctx => {
-                          const isAttached = attachedContexts.find(p => p.id === ctx.id);
+                        {contexts.filter(ctx => (ctx.type || 'General') === category).map(ctx => {
+                          const isAttached = attachedContexts.find(p => String(p.id) === String(ctx.id));
                           return (
                             <div 
                               key={ctx.id} 
