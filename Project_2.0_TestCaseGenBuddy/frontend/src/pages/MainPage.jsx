@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Settings, Send, History, Download, Trash2, Edit2, MessageSquare, Table as TableIcon, Loader, ChevronLeft, ChevronRight, ChevronDown, X, Layers, Database, LayoutDashboard, Sun, Moon } from 'lucide-react';
+import { Settings, Send, History, Download, Trash2, Edit2, MessageSquare, Table as TableIcon, Loader, ChevronLeft, ChevronRight, ChevronDown, X, Layers, Database, LayoutDashboard, Sun, Moon, RefreshCw } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { historyApi, llmApi, settingsApi, templatesApi, contextApi } from '../services/api';
 
