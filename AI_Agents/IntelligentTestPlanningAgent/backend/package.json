@@ -1,5 +1,5 @@
 {
-  "name": "testingbuddy-backend",
+  "name": "testplanner-backend",
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
@@ -12,6 +12,9 @@
     "dotenv": "^16.4.5",
     "express": "^4.21.0",
     "marked": "^18.0.0"
+  },
+  "engines": {
+    "node": "20.x"
   },
   "devDependencies": {
     "nodemon": "^3.1.7"

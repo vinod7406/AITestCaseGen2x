@@ -5,27 +5,34 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const DATA_DIR = path.join(__dirname, '../data');
+const DATA_DIR = path.join(process.cwd(), 'data');
+const memoryCache: Record<string, any> = {};
 
 export const readJsonFile = async <T>(filename: string, defaultValue: T): Promise<T> => {
+  if (memoryCache[filename]) return memoryCache[filename];
+  
   const filePath = path.join(DATA_DIR, filename);
   try {
     const data = await fs.readFile(filePath, 'utf-8');
-    return JSON.parse(data);
+    const parsed = JSON.parse(data);
+    memoryCache[filename] = parsed;
+    return parsed;
   } catch (error: any) {
-    if (error.code === 'ENOENT') {
-      // Create data directory if it doesn't exist
-      await fs.mkdir(DATA_DIR, { recursive: true });
-      // Create file with default value
-      await fs.writeFile(filePath, JSON.stringify(defaultValue, null, 2));
+    if (error.code === 'ENOENT' || error.code === 'EROFS') {
+      memoryCache[filename] = defaultValue;
       return defaultValue;
     }
-    throw error;
+    return defaultValue;
   }
 };
 
 export const writeJsonFile = async <T>(filename: string, data: T): Promise<void> => {
+  memoryCache[filename] = data;
   const filePath = path.join(DATA_DIR, filename);
-  await fs.mkdir(DATA_DIR, { recursive: true });
-  await fs.writeFile(filePath, JSON.stringify(data, null, 2));
+  try {
+    await fs.mkdir(DATA_DIR, { recursive: true });
+    await fs.writeFile(filePath, JSON.stringify(data, null, 2));
+  } catch (error: any) {
+    console.warn(`Storage: Write failed for ${filename} (likely read-only environment):`, error.message);
+  }
 };

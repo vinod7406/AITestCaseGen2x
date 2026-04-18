@@ -4,11 +4,16 @@ import {
   History, Target, CheckCircle2, Search, Zap, 
   FileText, Database, Shield, Github, Layers, 
   Plus, X, AlertCircle, ExternalLink, RefreshCw, BarChart, Cloud,
-  Eye, Code, Download, Share2
+  Eye, Code, Download, Share2, Trash2, Edit2, ChevronDown, ChevronUp
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+
+// ─────────────────────────────────────────────────────
+// API Configuration
+// ─────────────────────────────────────────────────────
+const API_BASE = import.meta.env.PROD ? 'https://tp-backend-murex.vercel.app' : '';
 
 // ─────────────────────────────────────────────────────
 // Components
@@ -113,6 +118,8 @@ export default function App() {
   const [step, setStep] = useState(1);
   const [collapsed, setCollapsed] = useState(false);
   const [isAddingJira, setIsAddingJira] = useState(false);
+  const [editingIdx, setEditingIdx] = useState(null);
+  const [expandedIdx, setExpandedIdx] = useState(null);
   const [jiraConnected, setJiraConnected] = useState(true);
   const [jiraIssues, setJiraIssues] = useState([]);
   const [activeTab, setActiveTab] = useState('Intelligent Test Planning Agent');
@@ -124,12 +131,17 @@ export default function App() {
   const [selectedConnectionIdx, setSelectedConnectionIdx] = useState(0);
   const [llmConfig, setLlmConfig] = useState(() => {
     const saved = localStorage.getItem('llm_config');
-    return saved ? JSON.parse(saved) : { 
+    return saved ? JSON.parse(saved) : (import.meta.env.PROD ? {
+        provider: 'Groq', 
+        baseUrl: '', 
+        apiKey: '', 
+        model: 'llama-3.3-70b-versatile'
+    } : { 
         provider: 'Ollama', 
         baseUrl: 'http://127.0.0.1:11434', 
         apiKey: '', 
         model: 'llama3' 
-    };
+    });
   });
   const [loading, setLoading] = useState(false);
   const [testLoading, setTestLoading] = useState(false);
@@ -171,21 +183,32 @@ export default function App() {
     setLoading(true);
     setMessage('');
     try {
-        const response = await fetch('/api/jira/test', {
+        const response = await fetch(`${API_BASE}/api/jira/test`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(jiraForm)
         });
         const data = await response.json();
         if (data.success) {
-            const newConn = { name: jiraForm.name, url: jiraForm.url, email: jiraForm.email, token: jiraForm.token };
-            const newConns = [...savedConnections, newConn];
+            const newConn = { ...jiraForm };
+            let newConns;
+            if (editingIdx !== null) {
+                newConns = [...savedConnections];
+                newConns[editingIdx] = newConn;
+                setMessage('Connection updated successfully!');
+            } else {
+                newConns = [...savedConnections, newConn];
+                setMessage('Connection saved successfully!');
+            }
             setSavedConnections(newConns);
             localStorage.setItem('jira_connections', JSON.stringify(newConns));
-            setSelectedConnectionIdx(newConns.length - 1); 
+            if (editingIdx === null) setSelectedConnectionIdx(newConns.length - 1); 
             setJiraConnected(true);
-            setMessage('Connection saved successfully!');
-            setTimeout(() => { setIsAddingJira(false); setMessage(''); }, 2000);
+            setTimeout(() => { 
+                setIsAddingJira(false); 
+                setEditingIdx(null);
+                setMessage(''); 
+            }, 2000);
         } else {
             setMessage('Error: ' + data.message);
         }
@@ -196,11 +219,32 @@ export default function App() {
     }
   };
 
+  const handleEditConnection = (idx, e) => {
+    e.stopPropagation();
+    const conn = savedConnections[idx];
+    setJiraForm({ ...conn });
+    setEditingIdx(idx);
+    setIsAddingJira(true);
+  };
+
+  const handleDeleteConnection = (idx, e) => {
+    e.stopPropagation();
+    if (savedConnections.length <= 0) return; // Should not happen with current logic but safe
+    const newConns = savedConnections.filter((_, i) => i !== idx);
+    setSavedConnections(newConns);
+    localStorage.setItem('jira_connections', JSON.stringify(newConns));
+    if (selectedConnectionIdx === idx) {
+        setSelectedConnectionIdx(0);
+    } else if (selectedConnectionIdx > idx) {
+        setSelectedConnectionIdx(selectedConnectionIdx - 1);
+    }
+  };
+
   const handleTestConnection = async () => {
     setTestLoading(true);
     setMessage('');
     try {
-        const response = await fetch('/api/jira/test', {
+        const response = await fetch(`${API_BASE}/api/jira/test`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(jiraForm)
@@ -222,7 +266,7 @@ export default function App() {
     setLlmTestLoading(true);
     setLlmMessage('');
     try {
-        const response = await fetch('/api/llm/test', {
+        const response = await fetch(`${API_BASE}/api/llm/test`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(llmConfig)
@@ -244,7 +288,7 @@ export default function App() {
     setFetchLoading(true);
     setFetchError('');
     try {
-        const response = await fetch('/api/jira/fetch', {
+        const response = await fetch(`${API_BASE}/api/jira/fetch`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -269,7 +313,7 @@ export default function App() {
   const handleGeneratePlan = async (additionalContext) => {
     setGenLoading(true);
     try {
-        const response = await fetch('/api/generate-plan', {
+        const response = await fetch(`${API_BASE}/api/generate-plan`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -299,6 +343,7 @@ export default function App() {
         }
     } catch (err) {
         console.error(err);
+        alert("Plan Generation Failed: " + err.message);
     } finally {
         setGenLoading(false);
     }
@@ -307,7 +352,7 @@ export default function App() {
   const handleAddToContextLibrary = async () => {
     try {
         const title = `AI Test Plan - ${fetchParams.product || fetchParams.projectKey || 'Generated'}`;
-        const response = await fetch('http://localhost:5006/api/context', {
+        const response = await fetch('https://tc-backend-mu.vercel.app/api/context', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -341,7 +386,7 @@ export default function App() {
     setPublishLoading(true);
     setPublishSuccess(null);
     try {
-        const response = await fetch('/api/confluence/publish', {
+        const response = await fetch(`${API_BASE}/api/confluence/publish`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -377,10 +422,13 @@ export default function App() {
                     </div>
                     
                     <button 
-                        onClick={() => setIsAddingJira(false)}
+                        onClick={() => {
+                            setIsAddingJira(false);
+                            setEditingIdx(null);
+                        }}
                         style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 16px', borderRadius: '8px', border: '1px solid #2563eb', background: 'transparent', color: '#2563eb', fontWeight: '600', marginBottom: '32px' }}
                     >
-                        <Settings size={18} /> Cancel
+                        <X size={18} /> Cancel
                     </button>
 
                     <div style={{ display: 'grid', gap: '24px' }}>
@@ -442,7 +490,7 @@ export default function App() {
                                 onClick={handleSaveJira}
                                 style={{ background: '#2563eb', color: '#fff', padding: '12px', borderRadius: '8px', fontWeight: '600', flex: 1 }}
                              >
-                                {loading ? 'Saving...' : 'Save Connection'}
+                                 {loading ? 'Saving...' : (editingIdx !== null ? 'Update Connection' : 'Save Connection')}
                              </button>
                          </div>
                          <button onClick={nextStep} style={{ background: '#2563eb', color: '#fff', padding: '16px', borderRadius: '8px', fontWeight: '700', fontSize: '1rem', width: '100%' }}>Continue to Fetch Issues</button>
@@ -452,21 +500,73 @@ export default function App() {
                 <>
                 <div style={{ background: '#fff', borderRadius: '16px', border: '1px solid #e2e8f0', padding: '32px', marginBottom: '40px' }}>
                     <h2 style={{ fontSize: '1.5rem', fontWeight: '700', marginBottom: '24px' }}>Jira Connection</h2>
-                    <label>Select Jira Connection</label>
-                    <select 
-                        value={selectedConnectionIdx}
-                        onChange={(e) => setSelectedConnectionIdx(parseInt(e.target.value))}
-                        style={{ marginBottom: '20px' }}
-                    >
+                    <div style={{ display: 'grid', gap: '12px', marginBottom: '24px' }}>
                         {savedConnections.map((conn, idx) => (
-                            <option key={idx} value={idx}>
-                                {conn.name} ({conn.url})
-                            </option>
+                            <div 
+                                key={idx}
+                                onClick={() => setSelectedConnectionIdx(idx)}
+                                style={{ 
+                                    padding: '16px', borderRadius: '12px', border: `2px solid ${selectedConnectionIdx === idx ? '#2563eb' : '#e2e8f0'}`,
+                                    background: selectedConnectionIdx === idx ? '#eff6ff' : '#fff',
+                                    cursor: 'pointer', transition: 'all 0.2s'
+                                }}
+                            >
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                        <div style={{ width: '32px', height: '32px', background: selectedConnectionIdx === idx ? '#2563eb' : '#f1f5f9', color: selectedConnectionIdx === idx ? '#fff' : '#64748b', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>
+                                            {idx + 1}
+                                        </div>
+                                        <div>
+                                            <div style={{ fontWeight: '700', color: '#1e293b' }}>{conn.name}</div>
+                                            <div style={{ fontSize: '0.75rem', color: '#64748b' }}>{conn.url}</div>
+                                        </div>
+                                    </div>
+                                    <div style={{ display: 'flex', gap: '4px' }}>
+                                        <button 
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setExpandedIdx(expandedIdx === idx ? null : idx);
+                                            }}
+                                            style={{ padding: '8px', borderRadius: '8px', color: '#64748b', background: 'transparent', border: 'none' }}
+                                        >
+                                            {expandedIdx === idx ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+                                        </button>
+                                        <button 
+                                            onClick={(e) => handleEditConnection(idx, e)}
+                                            style={{ padding: '8px', borderRadius: '8px', color: '#2563eb', background: 'transparent', border: 'none' }}
+                                        >
+                                            <Edit2 size={18} />
+                                        </button>
+                                        <button 
+                                            onClick={(e) => handleDeleteConnection(idx, e)}
+                                            style={{ padding: '8px', borderRadius: '8px', color: '#ef4444', background: 'transparent', border: 'none' }}
+                                        >
+                                            <Trash2 size={18} />
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                {expandedIdx === idx && (
+                                    <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid #e2e8f0', fontSize: '0.85rem', color: '#64748b' }}>
+                                        <div style={{ display: 'grid', gridTemplateColumns: '80px 1fr', gap: '8px', marginBottom: '4px' }}>
+                                            <span style={{ fontWeight: '600' }}>Email:</span>
+                                            <span>{conn.email || 'N/A'}</span>
+                                        </div>
+                                        <div style={{ display: 'grid', gridTemplateColumns: '80px 1fr', gap: '8px' }}>
+                                            <span style={{ fontWeight: '600' }}>Token:</span>
+                                            <span>••••••••••••{conn.token?.slice(-4) || '••••'}</span>
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </div>
                         ))}
-                    </select>
+                    </div>
                     <button 
-                        onClick={() => setIsAddingJira(true)}
-                        style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', borderRadius: '8px', border: '1px solid #2563eb', background: 'transparent', color: '#2563eb', fontWeight: '600' }}
+                        onClick={() => {
+                            setJiraForm({ name: '', url: '', email: '', token: '' });
+                            setIsAddingJira(true);
+                        }}
+                        style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', borderRadius: '8px', border: '1px solid #2563eb', background: 'transparent', color: '#2563eb', fontWeight: '700', fontSize: '0.9rem' }}
                     >
                         <Plus size={18} /> Add New Connection
                     </button>
@@ -479,7 +579,16 @@ export default function App() {
                 </div>
                 
                 <h3 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '8px' }}>Import from Test Management Tools</h3>
-                <p style={{ color: '#64748b', marginBottom: '32px' }}>Connect to your existing test case repositories and management platforms</p>
+                <p style={{ color: '#64748b', marginBottom: '24px' }}>Connect to your existing test case repositories and management platforms</p>
+
+                {import.meta.env.PROD && llmConfig.provider === 'Ollama' && (
+                    <div style={{ marginBottom: '24px', padding: '16px', background: '#fff7ed', border: '1px solid #ffedd5', borderRadius: '12px', color: '#9a3412', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <AlertCircle size={20} />
+                        <div>
+                            <strong>Cloud Deployment Tip:</strong> You are currently using Ollama (Local). For the live demo, please switch to <strong>Groq</strong> or <strong>Gemini</strong> in Settings to enable AI generation.
+                        </div>
+                    </div>
+                )}
                 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px' }}>
                     {tools.map((t, i) => <ToolCard key={i} {...t} onManage={() => setIsAddingJira(true)} />)}
@@ -931,7 +1040,7 @@ export default function App() {
                                     };
                                     const payloadKey = mapProviderName(llmConfig.provider);
                                     
-                                    await fetch('http://localhost:5006/api/settings', {
+                                    await fetch('https://tc-backend-mu.vercel.app/api/settings', {
                                         method: 'PUT',
                                         headers: { 'Content-Type': 'application/json' },
                                         body: JSON.stringify({
@@ -961,7 +1070,7 @@ export default function App() {
         return (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100%', width: '100%' }}>
                 <iframe 
-                    src="http://localhost:5177" 
+                    src={import.meta.env.PROD ? "https://tc-frontend-nu.vercel.app" : "http://localhost:5177"} 
                     style={{ flex: 1, width: '100%', height: '100%', border: 'none', background: '#fff' }}
                     title="Test Case Generator"
                 />

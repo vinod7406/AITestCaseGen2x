@@ -231,11 +231,18 @@ const MainPage = () => {
   };
 
   const handleAddContext = async () => {
-    if (!newContext.title || !newContext.content) return;
+    const hasContent = newContext.content && newContext.content.trim().length > 0;
+    const hasFiles = newContext.files && newContext.files.length > 0;
+    
+    if (!newContext.title || (!hasContent && !hasFiles)) {
+      alert('Please provide either context content or attach a file, and ensure a title is set.');
+      return;
+    }
+
     try {
       await contextApi.save(newContext);
       setShowContextModal(false);
-      setNewContext({ title: '', type: 'PRD', content: '' });
+      setNewContext({ title: '', type: 'PRD', content: '', files: [] });
       fetchContexts();
     } catch (err) { alert('Failed to save context item'); }
   };
@@ -974,6 +981,7 @@ const MainPage = () => {
                 <option value="LOG">🗄️ System Logs</option>
                 <option value="UX">🎨 UI/UX Mockup</option>
                 <option value="GEN">💡 General Knowledge</option>
+                <option value="Template">🎯 Plan Template</option>
               </select>
             </div>
 
@@ -992,7 +1000,7 @@ const MainPage = () => {
               <textarea 
                 placeholder="Paste content or describe the requirement..." 
                 value={newContext.content} 
-                onChange={e => setNewContext({...newContext, content: e.target.value, title: newContext.files.length > 0 ? newContext.title : e.target.value.substring(0, 30)})}
+                onChange={e => setNewContext({...newContext, content: e.target.value, title: (newContext.files && newContext.files.length > 0) ? newContext.title : e.target.value.substring(0, 30)})}
                 style={{ padding: '12px', background: 'var(--bg-primary)', border: '1px solid var(--border-color)', borderRadius: '8px', color: 'var(--text-primary)', height: '150px' }}
               />
             </div>

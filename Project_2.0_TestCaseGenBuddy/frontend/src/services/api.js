@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:5006/api',
+  baseURL: import.meta.env.PROD ? 'https://tc-backend-mu.vercel.app/api' : 'http://localhost:5006/api',
 });
 
 export const settingsApi = {
