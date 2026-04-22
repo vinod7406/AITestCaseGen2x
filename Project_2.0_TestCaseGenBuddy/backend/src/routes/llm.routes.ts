@@ -37,20 +37,32 @@ router.post('/generate', async (req, res) => {
     // Parse JSON from response
     let testCases;
     try {
-      // Find JSON array in the response (handle potential markdown blocks)
-      const cleanContent = responseText.replace(/```json|```/g, '').trim();
-      const startIdx = cleanContent.indexOf('[');
-      const endIdx = cleanContent.lastIndexOf(']');
+      // More robust JSON extraction: find the widest array structure [...]
+      const startIdx = responseText.indexOf('[');
+      const endIdx = responseText.lastIndexOf(']');
       
-      if (startIdx !== -1 && endIdx !== -1) {
-        const jsonStr = cleanContent.substring(startIdx, endIdx + 1);
-        testCases = JSON.parse(jsonStr);
+      if (startIdx !== -1 && endIdx !== -1 && endIdx > startIdx) {
+        const jsonStr = responseText.substring(startIdx, endIdx + 1);
+        try {
+          testCases = JSON.parse(jsonStr);
+        } catch (innerError) {
+          // If pure substring fails, try stripping common markdown artifacts
+          const furtherClean = jsonStr.replace(/```json|```/g, '').trim();
+          testCases = JSON.parse(furtherClean);
+        }
       } else {
+        // Fallback for single object or direct JSON string
+        const cleanContent = responseText.replace(/```json|```/g, '').trim();
         testCases = JSON.parse(cleanContent);
       }
     } catch (e) {
       console.error('JSON Parse Error:', e);
-      testCases = [{ error: "Failed to parse test cases as JSON. Please try again or check the LLM output.", raw: responseText.substring(0, 200) + '...' }];
+      console.error('Raw Response (first 500 chars):', responseText.substring(0, 500));
+      testCases = [{ 
+        error: "Failed to parse test cases. The AI response was not in a valid JSON format.", 
+        details: e.message,
+        rawPreview: responseText.substring(0, 100) + '...' 
+      }];
     }
 
     // Save to history
@@ -63,7 +75,9 @@ router.post('/generate', async (req, res) => {
 
     res.json(testCases);
   } catch (error: any) {
-    res.status(500).json({ error: error.message });
+    const errorDetail = error.response?.data?.error?.message || error.response?.data?.message || error.message;
+    console.error('Generation Error Detail:', errorDetail);
+    res.status(500).json({ error: errorDetail });
   }
 });
 
@@ -84,7 +98,9 @@ router.post('/chat', async (req, res) => {
 
     res.json({ response: responseText });
   } catch (error: any) {
-    res.status(500).json({ error: error.message });
+    const errorDetail = error.response?.data?.error?.message || error.response?.data?.message || error.message;
+    console.error('Chat Error Detail:', errorDetail);
+    res.status(500).json({ error: errorDetail });
   }
 });
 

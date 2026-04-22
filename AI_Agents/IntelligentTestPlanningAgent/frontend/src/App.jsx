@@ -1041,7 +1041,8 @@ export default function App() {
                                     };
                                     const payloadKey = mapProviderName(llmConfig.provider);
                                     
-                                    await fetch('https://tc-backend-mu.vercel.app/api/settings', {
+                                    const targetBackend = import.meta.env.PROD ? 'https://tc-backend-mu.vercel.app/api' : 'http://localhost:5006/api';
+                                    await fetch(`${targetBackend}/settings`, {
                                         method: 'PUT',
                                         headers: { 'Content-Type': 'application/json' },
                                         body: JSON.stringify({

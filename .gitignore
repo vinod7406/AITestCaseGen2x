@@ -5,3 +5,5 @@ target/
 .DS_Store
 *.log
 scripts/*.json
+**/data/settings.json
+Project_2.0_TestCaseGenBuddy/backend/data/history.json
