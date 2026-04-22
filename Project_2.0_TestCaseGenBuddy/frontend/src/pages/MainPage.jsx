@@ -93,7 +93,7 @@ const MainPage = () => {
   const fetchContexts = async () => {
     try {
       const res = await contextApi.getAll();
-      setContexts(res.data);
+      setContexts(Array.isArray(res.data) ? res.data : []);
     } catch (err) { console.error(err); }
   };
 
@@ -777,7 +777,8 @@ const MainPage = () => {
         </div>
 
         {/* Resizable Input Area */}
-        <div style={{ position: 'relative', borderTop: '1px solid var(--border-color)', background: 'var(--bg-secondary)', padding: '0 32px 32px 32px' }}>
+        {activeView === 'generator' && (
+          <div style={{ position: 'relative', borderTop: '1px solid var(--border-color)', background: 'var(--bg-secondary)', padding: '0 32px 32px 32px' }}>
           {/* Drag Handle */}
           <div 
             onMouseDown={handleMouseDown}
@@ -896,6 +897,7 @@ const MainPage = () => {
           </div>
         </div>
       </div>
+        )}
     </main>
 
       {/* Modals */}
