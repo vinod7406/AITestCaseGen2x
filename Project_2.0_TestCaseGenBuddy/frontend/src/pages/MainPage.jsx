@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Settings, Send, History, Download, Trash2, Edit2, MessageSquare, Table as TableIcon, Loader, ChevronLeft, ChevronRight, ChevronDown, X, Layers, Database, LayoutDashboard, Sun, Moon, RefreshCw } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { historyApi, llmApi, settingsApi, templatesApi, contextApi } from '../services/api';
+import axios from 'axios';
 
 const MainPage = () => {
   const [input, setInput] = useState('');
@@ -36,6 +37,7 @@ const MainPage = () => {
     { id: 'non-functional', label: 'Non-Functional' },
     { id: 'edge-cases', label: 'Edge Cases' },
     { id: 'negative', label: 'Negative' },
+    { id: 'automation', label: 'Automation Script 🚀' },
   ];
 
   useEffect(() => {
@@ -128,6 +130,22 @@ const MainPage = () => {
       fetchTemplates();
     } catch (err) {
       console.error('Failed to update category', err);
+    }
+  };
+
+  const handleOpenInTestTool = async () => {
+    if (!activeEntry || !activeEntry.output || !Array.isArray(activeEntry.output)) return;
+    
+    try {
+      const scriptName = `ai-gen-${new Date().getTime()}`;
+      await axios.post('http://localhost:5002/api/save', {
+        name: scriptName,
+        steps: activeEntry.output
+      });
+      window.open('http://localhost:5176', '_blank');
+    } catch (err) {
+      console.error(err);
+      alert('Failed to send to TestTool. Make sure TestTool backend is running on port 5002.');
     }
   };
 
@@ -333,7 +351,7 @@ const MainPage = () => {
             boxShadow: '0 2px 8px rgba(0,0,0,0.3)'
           }}
         >
-          {isSidebarExpanded ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
+          {isSidebarExpanded ? <ChevronLeft size={20} /> : <ChevronRight size={20} />}
         </button>
 
         <div style={{ 
@@ -361,7 +379,7 @@ const MainPage = () => {
               borderRadius: '8px', cursor: 'pointer', justifyContent: isSidebarExpanded ? 'flex-start' : 'center'
             }}
           >
-            <MessageSquare size={20} style={{ minWidth: '20px' }} />
+            <MessageSquare size={24} style={{ minWidth: '24px' }} />
             {isSidebarExpanded && <span style={{ fontWeight: activeView === 'generator' ? 'bold' : 'normal', whiteSpace: 'nowrap' }}>Generator</span>}
           </button>
           <button 
@@ -374,7 +392,7 @@ const MainPage = () => {
               borderRadius: '8px', cursor: 'pointer', justifyContent: isSidebarExpanded ? 'flex-start' : 'center'
             }}
           >
-            <Layers size={20} style={{ minWidth: '20px' }} />
+            <Layers size={24} style={{ minWidth: '24px' }} />
             {isSidebarExpanded && <span style={{ fontWeight: activeView === 'templates_library' ? 'bold' : 'normal', whiteSpace: 'nowrap' }}>Templates Library</span>}
           </button>
           <button 
@@ -387,7 +405,7 @@ const MainPage = () => {
               borderRadius: '8px', cursor: 'pointer', justifyContent: isSidebarExpanded ? 'flex-start' : 'center'
             }}
           >
-            <Database size={20} style={{ minWidth: '20px' }} />
+            <Database size={24} style={{ minWidth: '24px' }} />
             {isSidebarExpanded && <span style={{ fontWeight: activeView === 'contexts_library' ? 'bold' : 'normal', whiteSpace: 'nowrap' }}>Context Library</span>}
           </button>
         </div>
@@ -399,7 +417,7 @@ const MainPage = () => {
           gap: '12px',
           justifyContent: isSidebarExpanded ? 'flex-start' : 'center'
         }}>
-          <History size={16} style={{ color: 'var(--text-secondary)', minWidth: '16px' }} />
+          <History size={20} style={{ color: 'var(--text-secondary)', minWidth: '20px' }} />
           {isSidebarExpanded && <span style={{ fontWeight: '600', fontSize: '0.8rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Recent Chats</span>}
         </div>
         <div style={{ flex: 1, overflowY: 'auto', padding: isSidebarExpanded ? '12px' : '8px' }}>
@@ -439,7 +457,7 @@ const MainPage = () => {
                   onClick={(e) => deleteEntry(entry.id, e)} 
                   style={{ background: 'transparent', color: 'var(--text-secondary)', padding: 0 }}
                 >
-                  <Trash2 size={16} />
+                  <Trash2 size={20} />
                 </button>
               )}
             </div>
@@ -462,7 +480,7 @@ const MainPage = () => {
               onClick={toggleTheme}
               style={{ background: 'transparent', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
             >
-              {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+              {theme === 'dark' ? <Sun size={24} /> : <Moon size={24} />}
             </button>
           </div>
         </header>
@@ -495,22 +513,44 @@ const MainPage = () => {
                     </div>
                   </div>
                   {activeEntry.type === 'test-case' && (
-                    <button 
-                      onClick={() => handleExport(activeEntry.id)}
-                      style={{ 
-                        display: 'flex', 
-                        alignItems: 'center', 
-                        gap: '8px', 
-                        padding: '8px 16px', 
-                        background: 'var(--bg-tertiary)', 
-                        color: 'var(--text-primary)', 
-                        borderRadius: '8px',
-                        border: '1px solid var(--border-color)'
-                      }}
-                    >
-                      <Download size={18} />
-                      Export CSV
-                    </button>
+                    <div style={{ display: 'flex', gap: '12px' }}>
+                      <button 
+                        onClick={() => handleExport(activeEntry.id)}
+                        style={{ 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          gap: '8px', 
+                          padding: '8px 16px', 
+                          background: 'var(--bg-tertiary)', 
+                          color: 'var(--text-primary)', 
+                          borderRadius: '8px',
+                          border: '1px solid var(--border-color)'
+                        }}
+                      >
+                        <Download size={22} />
+                        Export CSV
+                      </button>
+                      {activeEntry.output?.[0]?.action && (
+                        <button 
+                          onClick={handleOpenInTestTool}
+                          style={{ 
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            gap: '8px', 
+                            padding: '8px 16px', 
+                            background: 'linear-gradient(135deg, #38bdf8, #818cf8)', 
+                            color: 'white', 
+                            borderRadius: '8px',
+                            border: 'none',
+                            fontWeight: 'bold',
+                            boxShadow: '0 4px 12px rgba(56, 189, 248, 0.2)'
+                          }}
+                        >
+                          <RefreshCw size={24} />
+                          Run in TestTool 🚀
+                        </button>
+                      )}
+                    </div>
                   )}
                 </div>
 
@@ -621,7 +661,7 @@ const MainPage = () => {
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                       <h3 style={{ fontSize: '1.1rem', color: 'var(--accent-primary)' }}>{tmp.name}</h3>
                       <button onClick={(e) => deleteTemplate(tmp.id, e)} style={{ background: 'transparent', color: 'var(--text-secondary)' }}>
-                        <Trash2 size={16} />
+                        <Trash2 size={20} />
                       </button>
                     </div>
                     <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical' }}>
@@ -671,7 +711,7 @@ const MainPage = () => {
                     style={{ padding: '10px', background: 'var(--bg-tertiary)', color: 'var(--text-secondary)', borderRadius: '8px', border: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                     title="Refresh Library"
                   >
-                    <RefreshCw size={20} />
+                    <RefreshCw size={24} />
                   </button>
                   <button 
                     onClick={() => setShowContextModal(true)}
@@ -735,10 +775,10 @@ const MainPage = () => {
                                 </div>
                                 <div style={{ display: 'flex', gap: '8px' }}>
                                   <button onClick={(e) => { e.stopPropagation(); setEditContextModal({...ctx}); }} style={{ background: 'transparent', color: 'var(--text-secondary)' }}>
-                                     <Edit2 size={16} />
+                                     <Edit2 size={20} />
                                   </button>
                                   <button onClick={(e) => deleteContext(ctx.id, e)} style={{ background: 'transparent', color: 'var(--text-secondary)' }}>
-                                     <Trash2 size={16} />
+                                     <Trash2 size={20} />
                                   </button>
                                 </div>
                               </div>
@@ -829,7 +869,7 @@ const MainPage = () => {
             {attachedContexts.length > 0 && (
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '4px 12px', background: 'rgba(16, 185, 129, 0.1)', borderRadius: '50px', border: '1px solid var(--success-color)' }}>
                 <span style={{ fontSize: '0.75rem' }}>Attached Contexts: {attachedContexts.length}</span>
-                <Trash2 size={12} cursor="pointer" onClick={() => setAttachedContexts([])} />
+                <Trash2 size={16} cursor="pointer" onClick={() => setAttachedContexts([])} />
               </div>
             )}
 
@@ -881,8 +921,8 @@ const MainPage = () => {
                 position: 'absolute',
                 right: '12px',
                 bottom: '12px',
-                width: '40px',
-                height: '40px',
+                width: '48px',
+                height: '48px',
                 background: loading ? 'var(--bg-tertiary)' : 'var(--accent-primary)',
                 color: 'white',
                 borderRadius: '50%',
@@ -892,7 +932,7 @@ const MainPage = () => {
                 boxShadow: '0 4px 12px rgba(56, 189, 248, 0.3)'
               }}
             >
-              {loading ? <Loader className="animate-spin" size={20} /> : <Send size={20} />}
+              {loading ? <Loader className="animate-spin" size={24} /> : <Send size={24} />}
             </button>
           </div>
         </div>

@@ -1,0 +1,433 @@
+{
+  "name": "General LinkedInPost",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        336,
+        240
+      ],
+      "id": "94c8e29c-5ea8-4ef4-a49e-7834c72ee50c",
+      "name": "When chat message received",
+      "webhookId": "1d304ce4-87ff-4eaf-8936-6f2fbbfcdc76"
+    },
+    {
+      "parameters": {
+        "model": "qwen/qwen3.5-9b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        720,
+        576
+      ],
+      "id": "811d59d9-2fb2-4e6c-80e6-d3c3b62cde46",
+      "name": "OpenRouter Chat Model1",
+      "credentials": {
+        "openRouterApi": {
+          "id": "3Jg19nMq9SC5jjvU",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"title\" : \"example\",\n  \"rationale\"  : \"example\",\n  \"hook\" : \"example\"\n}",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        656,
+        432
+      ],
+      "id": "12a136da-c9f7-4882-8f48-8189dae2d3da",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "19JeLbnElBK9Ta9C5EcslNx-iBa22yg-SvISWrnuMrbo",
+          "mode": "list",
+          "cachedResultName": "Content Generated LinkedIn",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/19JeLbnElBK9Ta9C5EcslNx-iBa22yg-SvISWrnuMrbo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/19JeLbnElBK9Ta9C5EcslNx-iBa22yg-SvISWrnuMrbo/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Rationale": "={{ $('Step1: Linked In Topic Generator').item.json.output.rationale }}",
+            "Title": "={{ $('Step1: Linked In Topic Generator').item.json.output.title }}",
+            "Hook": "={{ $('Step1: Linked In Topic Generator').item.json.output.hook }}",
+            "Status": "Draft",
+            "Date": "={{ $now }}",
+            "Content": "={{ $json.output.content }}",
+            "Image Prompt": "={{ $json.output.image_prompt }}"
+          },
+          "matchingColumns": [
+            "Title"
+          ],
+          "schema": [
+            {
+              "id": "Title",
+              "displayName": "Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Rationale",
+              "displayName": "Rationale",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Hook",
+              "displayName": "Hook",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Content",
+              "displayName": "Content",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Image Prompt",
+              "displayName": "Image Prompt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1376,
+        240
+      ],
+      "id": "a99ad4a7-de17-441e-a4c2-d85abedc61ee",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "7UVIaaecYvhFS4GF",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"content\" : \"Content of the generated LinkedIn post.\",\n  \"image_prompt\" : \" Image that the AI should generate.\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        1136,
+        480
+      ],
+      "id": "9797b8ba-8ae2-4b1f-8785-8a31780ffd7d",
+      "name": "Structured Output Parser1"
+    },
+    {
+      "parameters": {
+        "model": "qwen/qwen3.5-9b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        976,
+        480
+      ],
+      "id": "3313d2c6-a270-4e5d-8895-2969193201e5",
+      "name": "OpenRouter Chat Model2",
+      "credentials": {
+        "openRouterApi": {
+          "id": "3Jg19nMq9SC5jjvU",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash-image",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash-image (Nano Banana)"
+        },
+        "prompt": "={{ $json['Image Prompt'] }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        1584,
+        256
+      ],
+      "id": "a5d2d421-8e6b-4ec2-851d-867fb3dda546",
+      "name": "Generate an image",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "OxkWAznreI70MEFW",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "You are a Senior QA architect and industry analyst writing in 2026.\n\nYour task is to generate ONLY ONE topic about:\n\n\"Software Testing in 2026\"\n\nConstraints:\n\n- Choose the single most impactful and future-defining shift.\n- Avoid generic themes unless you provide a deeply unique angle.\n- The topic must be bold, specific, and insight-driven.\n- It should reflect a real structural change in the industry (not surface-level trends).\n- The topic must be strong enough to anchor a keynote talk.\n- \n-  You can talk about Playwright AI agents, MCP, Playwright CLI, AI agents, n8n, LangFlow, RAG, MCP, Crew.ai, LLM evaluation  \nOutput format:\n\n1. Title (clear, bold, thought-provoking)\n2. One-sentence thesis (strong and definitive)\n3. Why this topic matters in 2026 (5–7 bullet points with reasoning)\nDo NOT generate multiple topics.\nDo NOT provide alternatives.\nCommit to one topic and defend it.\n\ndon't` make a complex topic, keep it very simple.`",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        544,
+        240
+      ],
+      "id": "71da31e8-a28e-4562-8d88-16ad8b5b4114",
+      "name": "Step1: Linked In Topic Generator"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a high-performing LinkedIn content strategist and B2B copywriter.\n\nInput:\n\n* Title: {{ $json.output.title }}\n* Rationale: {{ $json.output.rationale }}\n* Suggested Hook: {{ $json.output.hook }}\n\nYour task:\nCreate a high-engagement LinkedIn post based on the inputs.\n\nRequirements:\n\n1. Start with the provided hook (optimize it if necessary for stronger scroll-stopping impact).\n\n2. STRICT FORMATTING RULES (MUST FOLLOW):\n\n* Every sentence must be on a new line OR max 2 lines per paragraph\n* Add a blank line after every paragraph\n* Use clean spacing for readability (LinkedIn style)\n* Use bullet points with \"•\" and ensure each bullet is on a new line\n* Avoid long blocks of text completely\n* Add line breaks for emphasis (single-line punch statements)\n\n3. Structure (ENFORCE THIS FLOW):\n\n* Hook\n* Build tension / problem\n* Shift in perspective\n* Key insights\n* Implication for audience\n\n4. Content quality:\n\n* Keep it practical, insight-driven (no fluff)\n* Add 3–5 sharp bullet points if helpful\n* Use one bold or contrarian statement\n\n5. Ending:\n\n* Strong takeaway\n* One engaging question\n\nTone:\n\n* Authoritative but conversational\n* Insightful and slightly bold\n* Written for professionals in tech/QA/engineering leadership\n\nLength:\n\n* 150–300 words\n\nIMPORTANT OUTPUT RULES:\n\n* Output must be cleanly formatted for direct LinkedIn posting\n* No markdown symbols like ** or ##\n* Only plain text with spacing\n\nVALIDATION RULE:\nIf formatting rules are not followed, regenerate the output.\n\nAfter the post, also provide:\n\nImage_Prompt:\n\nCreate a high-quality AI image prompt based on the LinkedIn post above.\n\nRequirements:\n\n* The visual MUST reflect the core idea/topic of the post\n* Do NOT reuse generic wording or fixed templates\n* Vary the scene, composition, and storytelling every time\n\nInclude:\n\n1. Scene concept (based on topic)\n2. Visual metaphor (represent the idea creatively)\n3. UI/product/tech elements if relevant\n4. Character or no character (decide dynamically)\n5. Color style (vary each time: neon / minimal / dark / pastel / cyberpunk / etc.)\n6. Lighting style (cinematic / soft glow / dramatic / high contrast)\n7. Composition (close-up / wide / split-screen / isometric / etc.)\n\nStyle:\n\n* Modern, high-quality, visually engaging\n* Suitable for LinkedIn / tech audience\n\nOutput should be:\n\n* Highly specific\n* Visually diverse across runs\n* No repetition of structure or phrases\n",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        976,
+        240
+      ],
+      "id": "0ffb35f9-9e76-4737-9200-08b184cc5e98",
+      "name": "Step2:Linked In Content Generator"
+    },
+    {
+      "parameters": {
+        "operation": "uploadText",
+        "user": "VINOD",
+        "platform": [
+          "linkedin"
+        ],
+        "title": "={{ $json.Content }}",
+        "linkedinTitle": "={{ $json.Content }}",
+        "targetLinkedinPageId": "me"
+      },
+      "type": "n8n-nodes-upload-post.uploadPost",
+      "typeVersion": 1,
+      "position": [
+        1792,
+        256
+      ],
+      "id": "42ebc2d4-4215-4116-b19d-502ce9028bee",
+      "name": "Upload to Linked In",
+      "credentials": {
+        "uploadPostApi": {
+          "id": "ObgicZZjtfdUWzjW",
+          "name": "Upload Post account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "qwen/qwen3.5-9b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        480,
+        416
+      ],
+      "id": "7cced84a-97bc-43c3-a310-dd2dd23411d9",
+      "name": "OpenRouter qwen3.19b Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "3Jg19nMq9SC5jjvU",
+          "name": "OpenRouter account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Step1: Linked In Topic Generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Structured Output Parser",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Step1: Linked In Topic Generator",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser1": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Step2:Linked In Content Generator",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Step2:Linked In Content Generator",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append or update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Generate an image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate an image": {
+      "main": [
+        [
+          {
+            "node": "Upload to Linked In",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Step1: Linked In Topic Generator": {
+      "main": [
+        [
+          {
+            "node": "Step2:Linked In Content Generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Step2:Linked In Content Generator": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter qwen3.19b Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Step1: Linked In Topic Generator",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "staticData": null,
+  "pinData": {},
+  "triggerCount": 0,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  }
+}

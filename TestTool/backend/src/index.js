@@ -11,10 +11,16 @@ if (!fs.existsSync(SCRIPTS_DIR)) {
 
 const app = express();
 app.use(cors());
-app.use(express.json());
+const interpolate = (text, vars = {}) => {
+    if (!text || typeof text !== 'string') return text;
+    return text.replace(/\{\{(.*?)\}\}/g, (match, key) => {
+        const val = vars[key.trim()];
+        return val !== undefined ? val : match;
+    });
+};
 
 app.post('/api/execute', async (req, res) => {
-    const { steps } = req.body;
+    const { steps, variables = {} } = req.body;
     let browser;
     const results = [];
     
@@ -24,121 +30,135 @@ app.post('/api/execute', async (req, res) => {
         const page = await context.newPage();
         
         for (const step of steps) {
-            const result = { ...step, status: 'PENDING', error: null, captured: null };
+            // Interpolate variables in locator and value
+            const interpolatedLocator = interpolate(step.locator, variables);
+            const interpolatedValue = interpolate(step.value, variables);
+            
+            const result = { ...step, status: 'PENDING', error: null, captured: null, locator: interpolatedLocator, value: interpolatedValue };
             try {
                 if (step.action === 'GOTO') {
-                    if (!step.value) throw new Error("URL is required for GOTO.");
-                    await page.goto(step.value, { timeout: 30000, waitUntil: 'domcontentloaded' });
+                    if (!result.value) throw new Error("URL is required for GOTO.");
+                    await page.goto(result.value, { timeout: 30000, waitUntil: 'domcontentloaded' });
 
                 } else if (step.action === 'CLICK') {
-                    if (!step.locator) throw new Error("Locator is required for CLICK.");
-                    await page.locator(step.locator).first().click({ timeout: 10000 });
+                    if (!result.locator) throw new Error("Locator is required for CLICK.");
+                    await page.locator(result.locator).first().click({ timeout: 10000 });
 
                 } else if (step.action === 'DOUBLE_CLICK') {
-                    if (!step.locator) throw new Error("Locator is required for DOUBLE_CLICK.");
-                    await page.locator(step.locator).first().dblclick({ timeout: 10000 });
+                    if (!result.locator) throw new Error("Locator is required for DOUBLE_CLICK.");
+                    await page.locator(result.locator).first().dblclick({ timeout: 10000 });
 
                 } else if (step.action === 'RIGHT_CLICK') {
-                    if (!step.locator) throw new Error("Locator is required for RIGHT_CLICK.");
-                    await page.locator(step.locator).first().click({ button: 'right', timeout: 10000 });
+                    if (!result.locator) throw new Error("Locator is required for RIGHT_CLICK.");
+                    await page.locator(result.locator).first().click({ button: 'right', timeout: 10000 });
 
                 } else if (step.action === 'TYPE') {
-                    if (!step.locator || !step.value) throw new Error("Locator and Value required for TYPE.");
-                    await page.locator(step.locator).first().fill(step.value, { timeout: 10000 });
+                    if (!result.locator || !result.value) throw new Error("Locator and Value required for TYPE.");
+                    await page.locator(result.locator).first().fill(result.value, { timeout: 10000 });
 
                 } else if (step.action === 'CLEAR') {
-                    if (!step.locator) throw new Error("Locator is required for CLEAR.");
-                    await page.locator(step.locator).first().clear({ timeout: 10000 });
+                    if (!result.locator) throw new Error("Locator is required for CLEAR.");
+                    await page.locator(result.locator).first().clear({ timeout: 10000 });
 
                 } else if (step.action === 'PRESS_KEY') {
-                    const key = step.value || 'Enter';
-                    if (step.locator) {
-                        await page.locator(step.locator).first().press(key, { timeout: 10000 });
+                    const key = result.value || 'Enter';
+                    if (result.locator) {
+                        await page.locator(result.locator).first().press(key, { timeout: 10000 });
                     } else {
                         await page.keyboard.press(key);
                     }
 
                 } else if (step.action === 'HOVER') {
-                    if (!step.locator) throw new Error("Locator is required for HOVER.");
-                    await page.locator(step.locator).first().hover({ timeout: 10000 });
+                    if (!result.locator) throw new Error("Locator is required for HOVER.");
+                    await page.locator(result.locator).first().hover({ timeout: 10000 });
 
                 } else if (step.action === 'SELECT') {
-                    if (!step.locator || !step.value) throw new Error("Locator and Value required for SELECT.");
-                    await page.locator(step.locator).first().selectOption(step.value, { timeout: 10000 });
+                    if (!result.locator || !result.value) throw new Error("Locator and Value required for SELECT.");
+                    await page.locator(result.locator).first().selectOption(result.value, { timeout: 10000 });
 
                 } else if (step.action === 'CHECK') {
-                    if (!step.locator) throw new Error("Locator is required for CHECK.");
-                    await page.locator(step.locator).first().check({ timeout: 10000 });
+                    if (!result.locator) throw new Error("Locator is required for CHECK.");
+                    await page.locator(result.locator).first().check({ timeout: 10000 });
 
                 } else if (step.action === 'UNCHECK') {
-                    if (!step.locator) throw new Error("Locator is required for UNCHECK.");
-                    await page.locator(step.locator).first().uncheck({ timeout: 10000 });
+                    if (!result.locator) throw new Error("Locator is required for UNCHECK.");
+                    await page.locator(result.locator).first().uncheck({ timeout: 10000 });
 
                 } else if (step.action === 'SCROLL_TO') {
-                    if (!step.locator) throw new Error("Locator is required for SCROLL_TO.");
-                    await page.locator(step.locator).first().scrollIntoViewIfNeeded({ timeout: 10000 });
+                    if (!result.locator) throw new Error("Locator is required for SCROLL_TO.");
+                    await page.locator(result.locator).first().scrollIntoViewIfNeeded({ timeout: 10000 });
 
                 } else if (step.action === 'SCROLL_PAGE') {
-                    const dir = step.value || 'down';
+                    const dir = result.value || 'down';
                     const amount = dir === 'up' ? -500 : 500;
                     await page.mouse.wheel(0, amount);
 
                 } else if (step.action === 'WAIT') {
-                    const time = parseInt(step.value || '1000', 10);
+                    const time = parseInt(result.value || '1000', 10);
                     await page.waitForTimeout(time);
 
                 } else if (step.action === 'WAIT_FOR_ELEMENT') {
-                    if (!step.locator) throw new Error("Locator is required for WAIT_FOR_ELEMENT.");
-                    await page.locator(step.locator).first().waitFor({ state: 'visible', timeout: 15000 });
+                    if (!result.locator) throw new Error("Locator is required for WAIT_FOR_ELEMENT.");
+                    await page.locator(result.locator).first().waitFor({ state: 'visible', timeout: 15000 });
 
                 } else if (step.action === 'WAIT_FOR_URL') {
-                    if (!step.value) throw new Error("URL pattern is required for WAIT_FOR_URL.");
-                    await page.waitForURL(step.value, { timeout: 15000 });
+                    if (!result.value) throw new Error("URL pattern is required for WAIT_FOR_URL.");
+                    await page.waitForURL(result.value, { timeout: 15000 });
 
                 } else if (step.action === 'ASSERT_TEXT') {
-                    if (!step.locator || !step.value) throw new Error("Locator and Value required for ASSERT_TEXT.");
-                    const text = await page.locator(step.locator).first().innerText({ timeout: 10000 });
-                    if (!text.includes(step.value)) {
-                        throw new Error(`Assertion Failed: Expected "${step.value}" but found "${text}"`);
+                    if (!result.locator || !result.value) throw new Error("Locator and Value required for ASSERT_TEXT.");
+                    const text = await page.locator(result.locator).first().innerText({ timeout: 10000 });
+                    if (!text.includes(result.value)) {
+                        throw new Error(`Assertion Failed: Expected "${result.value}" but found "${text}"`);
                     }
                     result.captured = text;
 
                 } else if (step.action === 'ASSERT_VISIBLE') {
-                    if (!step.locator) throw new Error("Locator is required for ASSERT_VISIBLE.");
-                    const isVisible = await page.locator(step.locator).first().isVisible({ timeout: 10000 });
-                    if (!isVisible) throw new Error(`Element "${step.locator}" is not visible.`);
+                    if (!result.locator) throw new Error("Locator is required for ASSERT_VISIBLE.");
+                    const isVisible = await page.locator(result.locator).first().isVisible({ timeout: 10000 });
+                    if (!isVisible) throw new Error(`Element "${result.locator}" is not visible.`);
 
                 } else if (step.action === 'ASSERT_URL') {
-                    if (!step.value) throw new Error("Value is required for ASSERT_URL.");
+                    if (!result.value) throw new Error("Value is required for ASSERT_URL.");
                     const currentUrl = page.url();
-                    if (!currentUrl.includes(step.value)) {
-                        throw new Error(`URL mismatch: Expected "${step.value}" in "${currentUrl}"`);
+                    if (!currentUrl.includes(result.value)) {
+                        throw new Error(`URL mismatch: Expected "${result.value}" in "${currentUrl}"`);
                     }
                     result.captured = currentUrl;
 
                 } else if (step.action === 'ASSERT_TITLE') {
-                    if (!step.value) throw new Error("Value is required for ASSERT_TITLE.");
+                    if (!result.value) throw new Error("Value is required for ASSERT_TITLE.");
                     const title = await page.title();
-                    if (!title.includes(step.value)) {
-                        throw new Error(`Title mismatch: Expected "${step.value}" in "${title}"`);
+                    if (!title.includes(result.value)) {
+                        throw new Error(`Title mismatch: Expected "${result.value}" in "${title}"`);
                     }
                     result.captured = title;
 
                 } else if (step.action === 'GET_TEXT') {
-                    if (!step.locator) throw new Error("Locator is required for GET_TEXT.");
-                    const text = await page.locator(step.locator).first().innerText({ timeout: 10000 });
+                    if (!result.locator) throw new Error("Locator is required for GET_TEXT.");
+                    const text = await page.locator(result.locator).first().innerText({ timeout: 10000 });
                     result.captured = text;
 
                 } else if (step.action === 'SCREENSHOT') {
                     const path = `/tmp/screenshot_${Date.now()}.png`;
-                    await page.screenshot({ path, fullPage: step.value === 'fullpage' });
+                    await page.screenshot({ path, fullPage: result.value === 'fullpage' });
                     result.captured = path;
 
                 } else if (step.action === 'SWITCH_FRAME') {
                     // switch into an iframe by selector
-                    if (!step.locator) throw new Error("Locator required for SWITCH_FRAME.");
-                    const frame = page.frameLocator(step.locator);
-                    if (!frame) throw new Error(`Frame "${step.locator}" not found.`);
+                    if (!result.locator) throw new Error("Locator required for SWITCH_FRAME.");
+                    const frame = page.frameLocator(result.locator);
+                    if (!frame) throw new Error(`Frame "${result.locator}" not found.`);
+
+                } else if (step.action === 'CUSTOM_CODE') {
+                    if (!result.value) throw new Error("Code snippet is required for CUSTOM_CODE.");
+                    // Run the code in an async function context
+                    const asyncFn = new Function('page', 'context', 'browser', 'variables', `
+                        return (async () => {
+                            ${result.value}
+                        })();
+                    `);
+                    await asyncFn(page, context, browser, variables);
 
                 } else if (step.action === 'ACCEPT_DIALOG') {
                     page.once('dialog', dialog => dialog.accept());

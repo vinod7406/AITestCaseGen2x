@@ -23,13 +23,35 @@ router.post('/generate', async (req, res) => {
     const selectedTypes = types && types.length > 0 ? types : ['functional'];
     const typesStr = selectedTypes.join(', ');
     
-    const systemPrompt = `You are an expert QA Engineer. Your task is to generate comprehensive outputs perfectly aligned with the user's requirements.
+    const isAutomation = selectedTypes.includes('automation');
+    
+    let systemPrompt = `You are an expert QA Engineer. Your task is to generate comprehensive outputs perfectly aligned with the user's requirements.
     
     CRITICAL INSTRUCTIONS:
     1. Look carefully at the user's entire prompt. If they provide a "FORMAT" section, a specific table structure, or custom fields (e.g. '| Test ID | Endpoint |...'), you MUST use ONLY those exact columns/fields as your JSON object keys (converted to camelCase).
     2. If NO format or custom fields are provided, fall back to these default keys: "id", "summary", "preconditions", "steps", "expectedResult", "type".
     3. Your response MUST be a valid JSON array of objects representing rows.
     4. Do NOT include any introductory or concluding text (no markdown wrapping other than the JSON block itself). ONLY return the JSON array starting with [ and ending with ].`;
+
+    if (isAutomation) {
+      systemPrompt += `
+      
+      SPECIAL INSTRUCTION FOR AUTOMATION:
+      Since the user requested an "Automation Script", you MUST generate a Playwright Keyword-based script instead of standard test cases.
+      Each object in the array MUST follow this exact structure compatible with our Keyword Engine:
+      { 
+        "id": "string", 
+        "action": "KEYWORD", 
+        "locator": "css_selector", 
+        "value": "input_value_or_url" 
+      }
+      
+      Supported Keywords: GOTO, CLICK, TYPE, ASSERT_TEXT, WAIT, SCREENSHOT, SELECT, CHECK, HOVER, SCROLL_TO, ASSERT_VISIBLE, CUSTOM_CODE.
+      - Use GOTO for URL navigation.
+      - Use CLICK and TYPE for element interaction.
+      - Use ASSERT_TEXT or ASSERT_VISIBLE for validation.
+      - ALWAYS prioritize CSS Selectors for "locator".`;
+    }
 
     console.log(`Generating test cases for types: ${typesStr} using provider: ${provider}`);
     const responseText = await llmService.generate(prompt, systemPrompt);
@@ -55,7 +77,7 @@ router.post('/generate', async (req, res) => {
         const cleanContent = responseText.replace(/```json|```/g, '').trim();
         testCases = JSON.parse(cleanContent);
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error('JSON Parse Error:', e);
       console.error('Raw Response (first 500 chars):', responseText.substring(0, 500));
       testCases = [{ 
